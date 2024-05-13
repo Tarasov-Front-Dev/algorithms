@@ -17,4 +17,20 @@ export function subarraySum(arr: number[], k: number) {
   }
   return answer;
 }
-// console.log(subarraySum(arr, 5));
+
+// ************ Sliding Window *************
+
+export const slidingWindow = (str: string) => {
+  if (typeof str !== "string")
+    throw new Error("Provide a string as an argument");
+
+  const set = new Set<string>();
+  let answer, left, right;
+  answer = left = right = 0;
+  while (right < str.length) {
+    while (set.has(str[right])) set.delete(str[left++]);
+    set.add(str[right++]);
+    answer = Math.max(answer, right - left);
+  }
+  return answer;
+};

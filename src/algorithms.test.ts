@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { subarraySum } from "./algorithms";
+
+import { slidingWindow, subarraySum } from "./algorithms";
 
 describe("prefixSums", () => {
   describe("should throw an error", () => {
@@ -42,6 +43,41 @@ describe("prefixSums", () => {
     it("should handle negative numbers correctly", () => {
       const arr = [-1, -2, -3, -4, -5];
       expect(subarraySum(arr, -3)).toBe(2);
+    });
+  });
+});
+
+describe("slidingWindow", () => {
+  describe("should throw an error", () => {
+    it("should throw an error if the argument is not a string", () => {
+      expect(() => slidingWindow(null as unknown as string)).toThrowError(
+        "Provide a string as an argument"
+      );
+      expect(() => slidingWindow(undefined as unknown as string)).toThrowError(
+        "Provide a string as an argument"
+      );
+      expect(() => slidingWindow(123 as unknown as string)).toThrowError(
+        "Provide a string as an argument"
+      );
+    });
+  });
+
+  describe("should return correct answer", () => {
+    it("should return the length of the string if all characters are unique", () => {
+      expect(slidingWindow("abcdefg")).toBe(7);
+    });
+
+    it("should return the length of the longest substring without repeating characters", () => {
+      expect(slidingWindow("abcbada")).toBe(4);
+      expect(slidingWindow("axbxcxd")).toBe(3);
+    });
+
+    it("should return 1 if all characters are the same", () => {
+      expect(slidingWindow("aaaaaaa")).toBe(1);
+    });
+
+    it("should return 0 if the string is empty", () => {
+      expect(slidingWindow("")).toBe(0);
     });
   });
 });
