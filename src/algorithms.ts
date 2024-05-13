@@ -34,3 +34,21 @@ export const slidingWindow = (str: string) => {
   }
   return answer;
 };
+
+// ************ Dynamic Programming ************
+
+// [4, 11, 10, 1, 2, 8, 5]
+
+export const dp = (arr: number[]) => {
+  if (!Array.isArray(arr))
+    throw new Error("Provide a number array as an argument");
+  if (arr.length < 2) return arr[0] ?? 0;
+
+  const answer = new Array(arr.length).fill(0);
+  answer[0] = arr[0];
+  answer[1] = Math.max(arr[0], arr[1]);
+  for (let i = 2; i < arr.length; i++) {
+    answer[i] = Math.max(answer[i - 2] + arr[i], answer[i - 1]);
+  }
+  return answer.at(-1) > 0 ? answer.at(-1) : 0;
+};
