@@ -52,3 +52,52 @@ export const dp = (arr: number[]) => {
   }
   return answer.at(-1) > 0 ? answer.at(-1) : 0;
 };
+
+// *************** Breadth-First Search ****************
+
+export function bfs(x: number, y: number) {
+  if (typeof x !== "number" || typeof y !== "number") {
+    throw new Error("Provide numbers as arguments");
+  }
+  const target = x.toString() + y;
+  let layer = 0;
+  let current_layer = new Set(["00"]);
+  const visited = new Set(["00"]);
+
+  while (current_layer.size) {
+    const next_layer = new Set<string>();
+    for (const position of current_layer) {
+      if (position === target) return layer;
+      current_layer.delete(position);
+      visited.add(position);
+      const node = moves(position, visited);
+      for (const neighbor of node) {
+        if (neighbor === target) return ++layer;
+        next_layer.add(neighbor);
+      }
+    }
+    current_layer = next_layer;
+    layer++;
+  }
+  return layer;
+}
+
+function moves(position: string, visited: Set<string>) {
+  const [x, y] = position.split("");
+  const possibleMoves = [
+    [+x - 2, +y + 1],
+    [+x - 2, +y - 1],
+    [+x + 2, +y + 1],
+    [+x + 2, +y - 1],
+    [+x - 1, +y + 2],
+    [+x + 1, +y + 2],
+    [+x - 1, +y - 2],
+    [+x + 1, +y - 2],
+  ].map(el => el.join(""));
+  return possibleMoves.reduce((acc: string[], v) => {
+    if (!visited.has(v)) acc.push(v);
+    return acc;
+  }, []);
+}
+
+console.log(bfs(3, -3)); // 2

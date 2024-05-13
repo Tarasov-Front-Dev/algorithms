@@ -1,4 +1,4 @@
 import "./style.css";
 
 export { sum } from "./sum";
-export { dp, slidingWindow, subarraySum } from "./algorithms";
+export { bfs, dp, slidingWindow, subarraySum } from "./algorithms";

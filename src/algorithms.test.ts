@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { dp, slidingWindow, subarraySum } from "./algorithms";
+import { bfs, dp, slidingWindow, subarraySum } from "./algorithms";
 
 describe("prefixSums", () => {
   describe("should throw an error", () => {
@@ -114,6 +114,40 @@ describe("dp", () => {
     it("should handle negative numbers correctly", () => {
       const arr = [-1, -2, -3, -4, -5];
       expect(dp(arr)).toBe(0);
+    });
+  });
+});
+
+describe("bfs", () => {
+  describe("should throw an error", () => {
+    it("should throw an error if the arguments are not numbers", () => {
+      expect(() => bfs(null as unknown as number, 5)).toThrowError(
+        "Provide numbers as arguments"
+      );
+      expect(() => bfs(undefined as unknown as number, 5)).toThrowError(
+        "Provide numbers as arguments"
+      );
+      expect(() => bfs("string" as unknown as number, 5)).toThrowError(
+        "Provide numbers as arguments"
+      );
+    });
+  });
+
+  describe("should return correct answer", () => {
+    it("should return the correct number of moves", () => {
+      expect(bfs(2, 1)).toBe(1);
+      expect(bfs(3, 3)).toBe(2);
+      expect(bfs(4, 5)).toBe(3);
+      expect(bfs(6, 6)).toBe(4);
+      expect(bfs(8, 7)).toBe(5);
+    });
+
+    it("should return 0 if the target is the starting position", () => {
+      expect(bfs(0, 0)).toBe(0);
+    });
+
+    it("should handle negative numbers correctly", () => {
+      expect(bfs(-1, -2)).toBe(1);
     });
   });
 });
