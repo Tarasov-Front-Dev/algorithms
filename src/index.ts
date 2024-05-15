@@ -1,4 +1,5 @@
-import "./style.css";
+import './style.css'
 
-export { sum } from "./sum";
-export { bfs, dp, slidingWindow, subarraySum } from "./algorithms";
+export { sum } from './sum'
+export * from './algorithms'
+export * from './interviewTasks'

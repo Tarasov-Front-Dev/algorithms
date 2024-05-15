@@ -1,103 +1,113 @@
-"use strict";
-// ******* Prefix sums ***********
+'use strict'
+// ******* Subarray Sum ***********
+// Find all subarray sums equal to k. Return quantity of the subarrays
+// Arguments: [4, 2, 2, 1, 2, -3, 5, -8], 5 // Result: 5 (subarrays)
 
-// const arr = [4, 2, 2, 1, 2, -3, 5, -8];
 export function subarraySum(arr: number[], k: number) {
-  if (!Array.isArray(arr))
-    throw new Error("Provide a number array as an argument");
-  if (!arr.length) return 0;
-  const map = new Map<number, number>([[0, 1]]);
-  let answer = 0,
-    subarraySum = 0;
+  if (!Array.isArray(arr)) throw new TypeError('Provide a number array as an argument')
+  if (!arr.length) return 0
+
+  const map = new Map<number, number>([[0, 1]])
+  let answer = 0
+  let subarraySum = 0
   for (const num of arr) {
-    subarraySum += num;
-    const diff = subarraySum - k;
-    answer += map.get(diff) ?? 0;
-    map.set(subarraySum, (map.get(subarraySum) ?? 0) + 1);
+    subarraySum += num
+    const diff = subarraySum - k
+    answer += map.get(diff) ?? 0
+    map.set(subarraySum, (map.get(subarraySum) ?? 0) + 1)
   }
-  return answer;
+  return answer
 }
 
 // ************ Sliding Window *************
+// Find longest substring with no repeating chars. Return a length of the substring
+// Arguments: 'abcbada' // Result: 4 (longest substring)
 
-export const slidingWindow = (str: string) => {
-  if (typeof str !== "string")
-    throw new Error("Provide a string as an argument");
+export function slidingWindow(str: string) {
+  if (typeof str !== 'string') throw new TypeError('Provide a string as an argument')
 
-  const set = new Set<string>();
-  let answer, left, right;
-  answer = left = right = 0;
+  const unique = new Set()
+  let answer, left, right
+  answer = left = right = 0
   while (right < str.length) {
-    while (set.has(str[right])) set.delete(str[left++]);
-    set.add(str[right++]);
-    answer = Math.max(answer, right - left);
+    while (unique.has(str[right])) {
+      unique.delete(str[left++])
+    }
+    unique.add(str[right++])
+    answer = Math.max(answer, right - left)
   }
-  return answer;
-};
+  return answer
+}
 
 // ************ Dynamic Programming ************
+// Find the greatest sum of an array's elements. You can not sum neighbor element
+// Arguments: [4, 11, 10, 1, 2, 8, 5] // Result: 22 (max sum sequence)
 
-// [4, 11, 10, 1, 2, 8, 5]
+export function dp(arr: number[]) {
+  if (!Array.isArray(arr)) throw new TypeError('Provide a number array as an argument')
+  if (arr.length < 2) return arr[0] > 0 ? arr[0] : 0
 
-export const dp = (arr: number[]) => {
-  if (!Array.isArray(arr))
-    throw new Error("Provide a number array as an argument");
-  if (arr.length < 2) return arr[0] ?? 0;
-
-  const answer = new Array(arr.length).fill(0);
-  answer[0] = arr[0];
-  answer[1] = Math.max(arr[0], arr[1]);
+  const answer = Array.from({ length: arr.length }, () => 0)
+  answer[0] = arr[0] > 0 ? arr[0] : 0
+  answer[1] = Math.max(answer[0], arr[1])
   for (let i = 2; i < arr.length; i++) {
-    answer[i] = Math.max(answer[i - 2] + arr[i], answer[i - 1]);
+    answer[i] = Math.max(answer[i - 2] + arr[i], answer[i - 1])
   }
-  return answer.at(-1) > 0 ? answer.at(-1) : 0;
-};
+  return answer.at(-1)
+}
 
 // *************** Breadth-First Search ****************
+// ChessBoard. Count a knight moves necessary to reach curtain field
+// Arguments: 2, 1 // Result: 1 (move)
 
 export function bfs(x: number, y: number) {
-  if (typeof x !== "number" || typeof y !== "number") {
-    throw new Error("Provide numbers as arguments");
-  }
-  const target = x.toString() + y;
-  let layer = 0;
-  let current_layer = new Set(["00"]);
-  const visited = new Set(["00"]);
+  if (typeof x !== 'number' || typeof y !== 'number')
+    throw new TypeError('Provide numbers as arguments')
 
-  while (current_layer.size) {
-    const next_layer = new Set<string>();
-    for (const position of current_layer) {
-      if (position === target) return layer;
-      current_layer.delete(position);
-      visited.add(position);
-      const node = moves(position, visited);
+  let layer = 0
+  const target = `${x}${y}`
+  let currentLayer = new Set<string>(['00']) // knight's start position
+  const visited = new Set<string>()
+
+  while (currentLayer.size) {
+    const newLayer = new Set<string>()
+    for (const position of currentLayer) {
+      if (position === target) {
+        return layer
+      }
+      currentLayer.delete(position)
+      visited.add(position)
+      const node = getMoves(position, visited)
       for (const neighbor of node) {
-        if (neighbor === target) return ++layer;
-        next_layer.add(neighbor);
+        if (neighbor === target) {
+          return layer + 1
+        }
+        newLayer.add(neighbor)
       }
     }
-    current_layer = next_layer;
-    layer++;
+    ++layer
+    currentLayer = newLayer
   }
-  return layer;
+  return -1
 }
 
-function moves(position: string, visited: Set<string>) {
-  const [x, y] = position.split("");
-  const possibleMoves = [
-    [+x - 2, +y + 1],
-    [+x - 2, +y - 1],
-    [+x + 2, +y + 1],
-    [+x + 2, +y - 1],
-    [+x - 1, +y + 2],
-    [+x + 1, +y + 2],
-    [+x - 1, +y - 2],
-    [+x + 1, +y - 2],
-  ].map(el => el.join(""));
-  return possibleMoves.reduce((acc: string[], v) => {
-    if (!visited.has(v)) acc.push(v);
-    return acc;
-  }, []);
-}
+function getMoves(position: string, visited: Set<string>) {
+  const [x, y] = position.split('').map(el => Number.parseInt(el))
+  const moves = [
+    [x + 2, y + 1],
+    [x + 2, y - 1],
+    [x - 2, y + 1],
+    [x - 2, y - 1],
+    [x + 1, y + 2],
+    [x - 1, y + 2],
+    [x + 1, y - 2],
+    [x - 1, y - 2],
+  ].map(move => move.join(''))
 
-console.log(bfs(3, -3)); // 2
+  return moves.reduce((acc, move) => {
+    if (!visited.has(move)) {
+      acc.push(move)
+    }
+    return acc
+  }, [] as string[])
+}
