@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { bfs, dp, slidingWindow, subarraySum } from './algorithms'
+import { List, bfs, dp, findCircularRef, slidingWindow, subarraySum } from './algorithms'
 
 describe('subarraySum', () => {
   describe('should throw an error', () => {
@@ -148,6 +148,59 @@ describe('bfs', () => {
 
     it('should handle negative numbers correctly', () => {
       expect(bfs(-1, -2)).toBe(1)
+    })
+  })
+})
+
+describe('findCircularRef', () => {
+  describe('should return correct answer', () => {
+    it('should return the node where the cycle begins', () => {
+      const list = {
+        val: 1,
+        next: {
+          val: 2,
+          next: { val: 3, next: { val: 4, next: { val: 5, next: { val: 6 } } } },
+        },
+      } as List
+      // @ts-expect-error create circular reference
+      list.next.next.next.next.next.next = list.next.next
+      const result = findCircularRef(list)
+      expect(result).toBe(list.next!.next)
+    })
+
+    it('should return the node if list is a full circle', () => {
+      const list = {
+        val: 1,
+        next: {
+          val: 2,
+          next: { val: 3, next: { val: 4 } },
+        },
+      } as List
+      // @ts-expect-error create circular reference
+      list.next.next.next.next = list
+      const result = findCircularRef(list)
+      expect(result).toBe(list)
+    })
+
+    it('should return null if there is no cycle', () => {
+      const list: List = {
+        val: 1,
+        next: {
+          val: 2,
+          next: {
+            val: 3,
+            next: { val: 4, next: { val: 5, next: { val: 6, next: null } } },
+          },
+        },
+      } as List
+      const result = findCircularRef(list)
+      expect(result).toBe(null)
+    })
+
+    it('should handle single node list correctly', () => {
+      const list: List = { val: 1, next: null } as List
+      const result = findCircularRef(list)
+      expect(result).toBe(null)
     })
   })
 })

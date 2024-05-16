@@ -111,3 +111,40 @@ function getMoves(position: string, visited: Set<string>) {
     return acc
   }, [] as string[])
 }
+
+// *********** Find the circular reference in LinkedList **************
+
+// The given List may containt circular reference. Find it or return null
+
+export type List = {
+  val: number
+  next: List | null
+}
+
+export const list = {
+  val: 1,
+  next: {
+    val: 4,
+    next: { val: 2, next: { val: 3, next: { val: 5, next: { val: 6 } } } },
+  },
+} as List
+// circular reference to the element with value 2
+// @ts-expect-error create circular reference
+list.next.next.next.next.next.next = list.next.next
+
+export function findCircularRef(list: List) {
+  let slow: List | null = list,
+    fast: List | null = list
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next
+    fast = fast.next.next
+    if (slow === fast) break
+  }
+  if (fast === null || fast.next === null) return null
+  slow = list
+  while (slow !== fast) {
+    slow = slow!.next
+    fast = fast!.next
+  }
+  return slow
+}

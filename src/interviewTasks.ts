@@ -108,9 +108,9 @@ export const jobs: Fabric = {
     ],
   ],
 }
-const scheduler = new AssemblyLineScheduler(3)
-jobs.jobsBatches[0].forEach(job => scheduler.appendJob(job))
-scheduler.start().then(console.log) // unkomment to start the task
+// const scheduler = new AssemblyLineScheduler(3)
+// jobs.jobsBatches[0].forEach(job => scheduler.appendJob(job))
+// scheduler.start().then(console.log) // unkomment to start the task
 
 // ********* Palindrom ********/
 
