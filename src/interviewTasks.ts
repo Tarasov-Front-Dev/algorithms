@@ -1,5 +1,3 @@
-import { compose } from './shared/utils'
-
 // ************* Yandex **************
 
 interface Fabric {
@@ -114,24 +112,17 @@ export const jobs: Fabric = {
 
 // ********* Palindrom ********/
 
-export function isPalindrom(str: string) {
-  if (!str.length) {
-    return false
-  }
+export const isPalindrom = (str: string) => {
+  if (!str.length) return false
   const regexp = /[^a-z]/i
-  let left = 0
-  let right = str.length - 1
-
-  while (left <= right) {
-    while (regexp.test(str[left])) {
-      ++left
-    }
-    while (regexp.test(str[right])) {
-      --right
-    }
-    if (str[left++].toLowerCase() !== str[right--].toLowerCase()) {
-      return false
-    }
+  let l = 0,
+    r = str.length - 1
+  while (l <= r) {
+    while (regexp.test(str[l])) l++
+    while (regexp.test(str[r])) r--
+    if (str[l].toLowerCase() !== str[r].toLowerCase()) return false
+    l++
+    r--
   }
   return true
 }
@@ -139,7 +130,6 @@ export function isPalindrom(str: string) {
 // ********** GRAPH **********
 
 type Graph = Record<Capitalize<string>, Capitalize<string>[]>
-type Previous = Record<Capitalize<string>, keyof Graph>
 
 async function fetchFlightPaths(): Promise<Graph> {
   return {
@@ -150,71 +140,37 @@ async function fetchFlightPaths(): Promise<Graph> {
   }
 }
 
-function checkPathInGraph({
-  start,
-  end,
-  graph,
-}: {
-  start: keyof Graph
-  end: Capitalize<string>
-  graph: Graph
-}) {
-  const queue = [start]
-  const unique = new Set(start)
-  const previous: Previous = {} as Previous
-
-  for (let i = 0; i < queue.length; i++) {
-    const node = graph[queue[i] as keyof Graph] as Capitalize<string>[]
-    if (!node) {
-      continue
-    }
-
-    let neighbor: (typeof node)[number]
-    for (neighbor of node) {
-      if (!unique.has(neighbor)) {
-        unique.add(neighbor)
-        queue.push(neighbor)
-        previous[neighbor] = queue[i]
-        if (neighbor === end) {
-          return { start, end, previous }
-        }
-      }
-    }
-  }
-  return { start, end, previous: undefined }
-}
-
-function producePath({
-  start,
-  end,
-  previous,
-}: {
-  start: keyof Graph
-  end: Capitalize<string>
-  previous: Previous | undefined
-}) {
-  if (!previous) {
-    return
-  }
-  const path: Capitalize<string>[] = [end]
-  while (end !== start) {
-    path.push(previous[end])
-    end = previous[end]
-  }
-  return path.reverse()
-}
-
-const checkPath = compose(producePath, checkPathInGraph)
-
-export async function findFlightPath(start: keyof Graph, end: Capitalize<string>) {
+export const findFlightPath = async (start: string, end: string) => {
   const graph = await fetchFlightPaths()
-  const path = checkPath({ start, end, graph })
-  if (path) {
-    return path
-  } else {
-    throw new Error('No way')
+  const queue = new Set(start)
+  const visited = new Set<string>()
+  const previous = new Map<string, string>()
+  label: for (const node of queue) {
+    visited.add(node)
+    const neighbours = getNeigbours(graph[node as keyof typeof graph], visited)
+    for (const neighbour of neighbours) {
+      if (!previous.has(neighbour)) previous.set(neighbour, node)
+      if (neighbour === end) break label
+      queue.add(neighbour)
+    }
   }
+  if (!previous.has(end)) throw new Error('No way')
+  return producePath(start, end, previous)
 }
+
+const getNeigbours = (node: string[] = [], visited: Set<string>) =>
+  node.reduce((acc, v) => (visited.has(v) ? acc : acc.add(v)), new Set<string>())
+
+const producePath = (start: string, end: string, previous: Map<string, string>) => {
+  const result = [end]
+  while (end !== start) {
+    end = previous.get(end)!
+    result.push(end)
+  }
+  return result.reverse()
+}
+
+console.log('findFlightPath:', findFlightPath('A', 'S').then(console.log)) // ['A', 'D', 'F', 'S']
 
 // ************ Proxy ************
 
@@ -257,22 +213,18 @@ user = new Proxy(user, {
 
 // const a = [1, 2]
 // const b = [2, 3, 4]
-export function merge(a: number[], b: number[]) {
-  if (!Array.isArray(a) || !Array.isArray(b)) {
-    return []
+
+export const merge = (a: number[], b: number[]) => {
+  if (!Array.isArray(a) || !Array.isArray(b)) return []
+  let answer = Array.from({ length: a.length + b.length - 1 }, () => 0)
+  let i = 0,
+    ai = 0,
+    bi = 0
+  while (ai < a.length && bi < b.length) {
+    if (a[ai] < b[bi]) answer[i] = a[ai++]
+    else answer[i] = b[bi++]
+    i++
   }
-  const result = Array.from({ length: a.length + b.length }).fill(0)
-  let i, j, r
-  i = j = r = 0
-  while (i < a.length && j < b.length) {
-    let num
-    if (a[i] < b[j]) {
-      num = a[i++]
-    } else {
-      num = b[j++]
-    }
-    result[r++] = num
-  }
-  result.length = r
-  return result.concat(a.slice(i), b.slice(j))
+  answer = answer.slice(0, ai + bi)
+  return answer.concat(a.slice(ai), b.slice(bi))
 }

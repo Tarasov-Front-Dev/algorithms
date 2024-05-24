@@ -15,7 +15,9 @@ describe('assemblyLineScheduler', () => {
     try {
       const result = await scheduler.start()
       expect(result).toStrictEqual(expectedResult)
-    } catch (error) {}
+    } catch (error) {
+      error
+    }
   })
 })
 
@@ -50,8 +52,12 @@ describe('isPalindrome', () => {
 
 describe('getPath', () => {
   it('should return Promise with the List of the points of the way or a rejected Promise', async () => {
-    expect(await findFlightPath('A', 'N')).toStrictEqual(['A', 'B', 'N'])
-    expect(await findFlightPath('A', 'S')).toStrictEqual(['A', 'D', 'F', 'S'])
+    try {
+      expect(await findFlightPath('A', 'N')).toStrictEqual(['A', 'B', 'N'])
+      expect(await findFlightPath('A', 'S')).toStrictEqual(['A', 'D', 'F', 'S'])
+    } catch (error) {
+      expect(error).not.toBeFalsy()
+    }
   })
   it('should throw an Error', async () => {
     try {

@@ -55,54 +55,47 @@ export const dp = (arr: number[]) => {
 // ChessBoard. Count a knight moves necessary to reach curtain field
 // Arguments: 2, 1 // Result: 1 (move)
 
-export function bfs(x: number, y: number) {
+export const bfs = (x: number, y: number) => {
   if (typeof x !== 'number' || typeof y !== 'number')
-    throw new TypeError('Provide numbers as arguments')
-
-  let layer = 0
-  const target = `${x}${y}`
-  let currentLayer = new Set<string>(['00']) // knight's start position
+    throw new Error('Provide numbers as arguments')
+  const target = String(x) + String(y)
+  const start = '00'
   const visited = new Set<string>()
+  let queue = new Set([start])
+  let layer = 0
 
-  while (currentLayer.size) {
-    const newLayer = new Set<string>()
-    for (const position of currentLayer) {
-      if (position === target) {
-        return layer
-      }
-      currentLayer.delete(position)
+  if (target === start) return layer
+  while (true) {
+    const newQueue = new Set<string>()
+    for (const position of queue) {
       visited.add(position)
-      const node = getMoves(position, visited)
-      for (const neighbor of node) {
-        if (neighbor === target) {
-          return layer + 1
-        }
-        newLayer.add(neighbor)
+      const moves = getMoves(position, visited)
+      for (const move of moves) {
+        if (move === target) return ++layer
+        newQueue.add(move)
       }
     }
-    ++layer
-    currentLayer = newLayer
+    if (!newQueue.size) break
+    layer++
+    queue = newQueue
   }
   return -1
 }
 
-function getMoves(position: string, visited: Set<string>) {
-  const [x, y] = position.split('').map(el => Number.parseInt(el))
+const getMoves = (position: string, visited: Set<string>) => {
+  const [x, y] = position.split('').map(el => Number(el))
   const moves = [
+    [x - 2, y - 1],
+    [x - 2, y + 1],
     [x + 2, y + 1],
     [x + 2, y - 1],
-    [x - 2, y + 1],
-    [x - 2, y - 1],
-    [x + 1, y + 2],
-    [x - 1, y + 2],
     [x + 1, y - 2],
     [x - 1, y - 2],
+    [x - 1, y + 2],
+    [x + 1, y + 2],
   ].map(move => move.join(''))
-
   return moves.reduce((acc, move) => {
-    if (!visited.has(move)) {
-      acc.push(move)
-    }
+    if (!visited.has(move)) acc.push(move)
     return acc
   }, [] as string[])
 }
