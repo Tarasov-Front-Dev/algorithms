@@ -36,6 +36,8 @@ module.exports = defineConfig({
   },
   test: {
     watch: false,
+    globals: true,
+    environment: 'jsdom',
   },
   resolve: {
     alias: [
