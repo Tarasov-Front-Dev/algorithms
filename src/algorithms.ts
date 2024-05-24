@@ -23,18 +23,15 @@ export function subarraySum(arr: number[], k: number) {
 // Find longest substring with no repeating chars. Return a length of the substring
 // Arguments: 'abcbada' // Result: 4 (longest substring)
 
-export function slidingWindow(str: string) {
+export const slidingWindow = (str: string) => {
   if (typeof str !== 'string') throw new TypeError('Provide a string as an argument')
-
-  const unique = new Set()
-  let answer, left, right
-  answer = left = right = 0
-  while (right < str.length) {
-    while (unique.has(str[right])) {
-      unique.delete(str[left++])
-    }
-    unique.add(str[right++])
-    answer = Math.max(answer, right - left)
+  const set = new Set<string>()
+  let answer, l, r
+  answer = l = r = 0
+  while (r < str.length) {
+    while (set.has(str[r])) set.delete(str[l++])
+    set.add(str[r++])
+    answer = Math.max(answer, r - l)
   }
   return answer
 }
