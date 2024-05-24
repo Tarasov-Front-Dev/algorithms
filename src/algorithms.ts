@@ -1,4 +1,7 @@
 'use strict'
+
+import { composeAsync, curry } from './shared/utils'
+
 // ******* Subarray Sum ***********
 // Find all subarray sums equal to k. Return quantity of the subarrays
 // Arguments: [4, 2, 2, 1, 2, -3, 5, -8], 5 // Result: 5 (subarrays)
@@ -71,7 +74,7 @@ export const bfs = (x: number, y: number) => {
       visited.add(position)
       const moves = getMoves(position, visited)
       for (const move of moves) {
-        if (move === target) return ++layer
+        if (move === target) return layer + 1
         newQueue.add(move)
       }
     }
@@ -136,3 +139,317 @@ export function findCircularRef(list: List) {
   }
   return slow
 }
+
+// ********* Search in 2D Matrix ***********
+
+// input: [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]
+// output: 5
+
+export const searchMatrix = function (matrix: number[][], target: number) {
+  let row = 0
+  let col = matrix[0].length
+  while (row < matrix.length && col >= 0) {
+    if (matrix[row][col] === target) {
+      return true
+    }
+    if (matrix[row][col] < target) {
+      row++
+    } else {
+      col--
+    }
+  }
+  return false
+}
+
+// ******** 937. Reorder Data in Log Files ********
+
+// input: ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
+// output: ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
+
+export const reorderLogFiles = function (logs: string[]) {
+  const body = (s: string) => s.slice(s.indexOf(' ') + 1) // get the body after indentifier
+  const isNum = (s: string) => /\d/.test(s)
+
+  // if body same then compare identifier
+  const compare = (a: string, b: string) => {
+    const n = body(a).localeCompare(body(b))
+    if (n !== 0) {
+      return n
+    }
+    return a.localeCompare(b)
+  }
+
+  const digitLogs = []
+  const letterLogs = []
+  for (const log of logs) {
+    if (isNum(body(log))) {
+      digitLogs.push(log)
+    } else {
+      letterLogs.push(log)
+    }
+  }
+
+  return letterLogs.sort(compare).concat(digitLogs)
+}
+
+// ******** 994. Rotting Oranges *********
+
+// input: [[2,1,1],[1,1,0],[0,1,1]]
+// output: 4
+
+export function orangesRotting(oranges: number[][]) {
+  const goodOranges = new Set<string>()
+  let currLayer = new Set<string>(
+    oranges.reduce((acc, row, rowIdx) => {
+      acc.push(
+        ...row.reduce((acc, v, col) => {
+          if (v === 2) {
+            acc.push(`${rowIdx}${col}`)
+          }
+          if (v === 1) {
+            goodOranges.add(`${rowIdx}${col}`)
+          }
+          return acc
+        }, [] as string[])
+      )
+      return acc
+    }, [] as string[])
+  )
+  let minute = 0
+
+  while (currLayer.size) {
+    const newLayer = new Set<string>()
+    for (const position of currLayer) {
+      currLayer.delete(position)
+      const moves = getMoves(position)
+      for (const move of moves) {
+        if (goodOranges.has(move)) {
+          goodOranges.delete(move)
+          newLayer.add(move)
+        }
+      }
+    }
+    if (newLayer.size) {
+      minute++
+    }
+    currLayer = newLayer
+  }
+
+  if (goodOranges.size) {
+    return -1
+  }
+  return minute
+
+  function getMoves(position: string) {
+    const [x, y] = position.split('').map(el => Number(el))
+    const moves = [
+      [x + 1, y],
+      [x - 1, y],
+      [x, y + 1],
+      [x, y - 1],
+    ].map(el => `${el[0]}${el[1]}`)
+    return moves
+  }
+}
+
+// ********* 429. N-ary Tree Level Order Traversal *********
+
+interface Node {
+  val: number
+  children: Node[]
+}
+
+// input: {val: 1,children: [{val: 3,children: [{ val: 5, children: [] },{ val: 6, children: [] },],},{ val: 2, children: [] },{ val: 4, children: [] },],}
+// output: [[1],[3,2,4],[5,6]]
+
+export const levelOrder = function (root: Node | null) {
+  if (!root) {
+    return []
+  }
+  const tree: [[Node, number]] = [[root, 0]]
+  const answer: number[][] = []
+
+  for (const row of tree) {
+    const [elem, level] = row
+    if (answer[level]) {
+      answer[level].push(elem.val)
+    } else {
+      answer.push([elem.val])
+    }
+
+    for (const child of elem.children) {
+      tree.push([child, level + 1])
+    }
+  }
+  return answer
+}
+
+// ******* DFS in Binary tree *******
+
+export interface BinaryTree {
+  val: number
+  left?: BinaryTree
+  right?: BinaryTree
+}
+
+// Find max sum path in the tree from the root
+
+// input: { val:1, left:{ val:4, left:{ val:2 }, right:{ val:3,left:{ val:2 }}}, right:{ val:7, left:{ val:5 }, right:{ val:4 }}}
+
+export function maxSumPath(root?: BinaryTree): number {
+  if (!root || !root.val) {
+    return 0
+  }
+  const left = maxSumPath(root.left)
+  const right = maxSumPath(root.right)
+  return Math.max(left, right) + root.val
+}
+
+// Find max sum path in the tree
+
+export const maxSumPathAnyPosition = function (root?: BinaryTree) {
+  let max = Number.NEGATIVE_INFINITY
+  getMaxSum(root)
+  return max
+
+  function getMaxSum(node?: BinaryTree): number {
+    if (!node) {
+      return 0
+    }
+    const leftSum = getMaxSum(node.left)
+    const rightSum = getMaxSum(node.right)
+    max = Math.max(max, node.val + leftSum + rightSum)
+    return Math.max(0, node.val + leftSum, node.val + rightSum)
+  }
+}
+
+// ********* Fetching Pokemon + Promisification *********
+
+type Pokemon = { sprites: { front_default: string } }
+type PokemonShort = { name: string; url: string }
+
+const _url = new URL('https://pokeapi.co/api/v2/pokemon/')
+async function fetchPokemon(name: string): Promise<string | undefined> {
+  if (!name) throw new Error("Must provide a pokemon's name")
+  const url = new URL(_url.href)
+  url.pathname += name
+  try {
+    const res = await fetch(url)
+    const pokemon: Pokemon = await res.json()
+    if (!pokemon?.sprites?.front_default)
+      throw new Error('No front image for the pokemon')
+    else return pokemon.sprites.front_default
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function imgCreationPromisified(
+  cb: (err?: Error, data?: HTMLImageElement) => void,
+  src: string | undefined
+) {
+  try {
+    const img = await new Promise<HTMLImageElement>((res, rej) => {
+      imgCreation((err, data) => {
+        if (err) rej(err)
+        if (data) res(data)
+      }, src)
+    })
+    cb(undefined, img)
+    return img
+  } catch (err) {
+    if (err instanceof Error) return cb(err)
+    console.log(err)
+  }
+}
+
+function imgCreation(
+  cb: (err?: Error, data?: HTMLImageElement) => void,
+  src: string | undefined
+): HTMLImageElement | undefined {
+  if (!src) return
+  const img = document.createElement('img')
+  img.src = src
+  img.style.position = 'absolute'
+  img.style.top = '60px'
+  img.onerror = () => cb(new Error('Loading pokemon image failed'))
+  img.onload = () => cb(undefined, img)
+  return img
+}
+
+function imgCreationHandler(
+  onError: (err: Error) => void,
+  onSuccess: (img: HTMLImageElement) => void,
+  err?: Error,
+  img?: HTMLImageElement
+) {
+  if (err) onError(err)
+  if (img) onSuccess(img)
+}
+
+function imgCreationOnError(err: Error) {
+  console.log(err)
+}
+
+function imgCreationOnSuccess(img: HTMLImageElement) {
+  document.body.prepend(img)
+}
+
+const handeImgCreation = curry(imgCreationHandler)(
+  imgCreationOnError,
+  imgCreationOnSuccess
+)
+const createImg = curry(imgCreationPromisified)(handeImgCreation)
+const fetchPokemonAndCreateImg = composeAsync(createImg, fetchPokemon)
+
+let img: HTMLImageElement | null
+
+async function placeInputToShowPokemon() {
+  const form = document.createElement('form')
+  form.id = 'fetchPokemon'
+  form.addEventListener('submit', ev => submitHandler<typeof form>(ev, 'pokemonName'))
+
+  const input = document.createElement('input')
+  input.name = 'pokemonName'
+  input.setAttribute('list', 'pokemonsList')
+  input.autocomplete = 'off'
+
+  const total = await getPokemonsQty()
+  total.sort((a: PokemonShort, b: PokemonShort) => a.name.localeCompare(b.name))
+  const options = total.map(({ name }: PokemonShort) => {
+    const option = document.createElement('option')
+    option.value = name
+    return option
+  })
+
+  const datalist = document.createElement('datalist')
+  datalist.id = 'pokemonsList'
+  datalist.prepend(...options)
+
+  form.prepend(input)
+  input.after(datalist)
+  document.body.prepend(form)
+
+  async function submitHandler<T extends HTMLFormElement>(
+    ev: SubmitEvent,
+    input: keyof T
+  ) {
+    ev.preventDefault()
+    if (img && 'remove' in img) img.remove()
+    const form = ev.currentTarget as T
+    const pokemonName = form[input].value
+    img = await fetchPokemonAndCreateImg(pokemonName)
+  }
+
+  async function getPokemonsQty() {
+    const url = new URL(_url.href)
+    const response = await fetch(url)
+    const data = await response.json()
+
+    url.searchParams.set('limit', data.count)
+    const responseTotal = await fetch(url)
+    const total = await responseTotal.json()
+    return total.results
+  }
+}
+placeInputToShowPokemon()

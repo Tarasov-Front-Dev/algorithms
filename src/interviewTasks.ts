@@ -221,10 +221,9 @@ export const merge = (a: number[], b: number[]) => {
     ai = 0,
     bi = 0
   while (ai < a.length && bi < b.length) {
-    if (a[ai] < b[bi]) answer[i] = a[ai++]
-    else answer[i] = b[bi++]
-    i++
+    if (a[ai] < b[bi]) answer[i++] = a[ai++]
+    else answer[i++] = b[bi++]
   }
-  answer = answer.slice(0, ai + bi)
+  answer.length = i
   return answer.concat(a.slice(ai), b.slice(bi))
 }

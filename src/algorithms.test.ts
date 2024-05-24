@@ -1,6 +1,18 @@
 import { describe, expect, it } from 'vitest'
 
-import { List, bfs, dp, findCircularRef, slidingWindow, subarraySum } from './algorithms'
+import {
+  List,
+  bfs,
+  dp,
+  findCircularRef,
+  levelOrder,
+  maxSumPath,
+  orangesRotting,
+  reorderLogFiles,
+  searchMatrix,
+  slidingWindow,
+  subarraySum,
+} from './algorithms'
 
 describe('subarraySum', () => {
   describe('should throw an error', () => {
@@ -202,5 +214,147 @@ describe('findCircularRef', () => {
       const result = findCircularRef(list)
       expect(result).toBe(null)
     })
+  })
+})
+
+describe('searchMatrix', () => {
+  it('should find the target in a sorted matrix', () => {
+    const matrix = [
+      [1, 4, 7, 11, 15],
+      [2, 5, 8, 12, 19],
+      [3, 6, 9, 16, 22],
+      [10, 13, 14, 17, 24],
+      [18, 21, 23, 26, 30],
+    ]
+    const target = 15
+    expect(searchMatrix(matrix, target)).toBeTruthy()
+  })
+
+  it('should not find the target when it is not in the matrix', () => {
+    const matrix = [
+      [1, 4, 7, 11, 15],
+      [2, 5, 8, 12, 19],
+      [3, 6, 9, 16, 22],
+      [10, 13, 14, 17, 24],
+      [18, 21, 23, 26, 30],
+    ]
+    const target = 25
+    expect(searchMatrix(matrix, target)).toBeFalsy()
+  })
+})
+
+describe('reorderLogFiles', () => {
+  it('should sort the logs correctly', () => {
+    const logs = [
+      'dig1 8 1 5 1',
+      'let1 art can',
+      'dig2 3 6',
+      'let2 own kit dig',
+      'let3 art zero',
+    ]
+    const expectedResult = [
+      'let1 art can',
+      'let3 art zero',
+      'let2 own kit dig',
+      'dig1 8 1 5 1',
+      'dig2 3 6',
+    ]
+    expect(reorderLogFiles(logs)).toEqual(expectedResult)
+  })
+})
+
+describe('orangesRotting', () => {
+  it('should return 4', () => {
+    expect(
+      orangesRotting([
+        [2, 1, 1],
+        [1, 1, 0],
+        [0, 1, 1],
+      ])
+    ).toBe(4)
+  })
+  it('should return 2', () => {
+    expect(
+      orangesRotting([
+        [2, 1, 1],
+        [1, 1, 0],
+        [0, 1, 2],
+      ])
+    ).toBe(2)
+  })
+
+  it('should return -1 when there are still good oranges left', () => {
+    expect(
+      orangesRotting([
+        [2, 1, 1],
+        [0, 1, 1],
+        [1, 0, 1],
+      ])
+    ).toBe(-1)
+  })
+
+  it('should return 0 when there is no good oranges was at the beginning', () => {
+    expect(orangesRotting([[0, 2]])).toBe(0)
+  })
+  it('should return 0 when there is no oranges at all', () => {
+    expect(orangesRotting([[0]])).toBe(0)
+  })
+})
+
+describe('levelOrder', () => {
+  it('should return an empty array when the root is null', () => {
+    expect(levelOrder(null)).toEqual([])
+  })
+
+  it('should return a single value for a leaf node', () => {
+    const root = { val: 1, children: [] }
+    expect(levelOrder(root)).toEqual([[1]])
+  })
+
+  it('should handle multiple levels correctly', () => {
+    const root = {
+      val: 1,
+      children: [
+        {
+          val: 3,
+          children: [
+            { val: 5, children: [] },
+            { val: 6, children: [] },
+          ],
+        },
+        { val: 2, children: [] },
+        { val: 4, children: [] },
+      ],
+    }
+    expect(levelOrder(root)).toStrictEqual([[1], [3, 2, 4], [5, 6]])
+  })
+})
+
+describe('dfs', () => {
+  it('should return 0 when the tree is undefined', () => {
+    expect(maxSumPath()).toBe(0) // null represents an empty tree
+  })
+
+  it('should return the max path sum in a single node tree', () => {
+    const singleNodeTree = { val: 1 }
+    expect(maxSumPath(singleNodeTree)).toBe(1)
+  })
+
+  it('should return the max path sum of a binary tree', () => {
+    const testTree = {
+      val: 1,
+      left: { val: 4, left: { val: 2 }, right: { val: 3, left: { val: 2 } } },
+      right: { val: 7, left: { val: 5 }, right: { val: 4 } },
+    }
+    expect(maxSumPath(testTree)).toBe(13)
+  })
+
+  it('should return the max path sum of a binary tree with negative values', () => {
+    const testTree = {
+      val: 1,
+      left: { val: 4, left: { val: 2 }, right: { val: 3, left: { val: 2 } } },
+      right: { val: -7, left: { val: 5 }, right: { val: 4 } },
+    }
+    expect(maxSumPath(testTree)).toBe(10)
   })
 })
