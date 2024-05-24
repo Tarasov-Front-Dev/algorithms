@@ -40,13 +40,11 @@ export const slidingWindow = (str: string) => {
 // Find the greatest sum of an array's elements. You can not sum neighbor element
 // Arguments: [4, 11, 10, 1, 2, 8, 5] // Result: 22 (max sum sequence)
 
-export function dp(arr: number[]) {
-  if (!Array.isArray(arr)) throw new TypeError('Provide a number array as an argument')
-  if (arr.length < 2) return arr[0] > 0 ? arr[0] : 0
-
+export const dp = (arr: number[]) => {
+  if (!Array.isArray(arr)) throw new Error('Provide a number array as an argument')
   const answer = Array.from({ length: arr.length }, () => 0)
   answer[0] = arr[0] > 0 ? arr[0] : 0
-  answer[1] = Math.max(answer[0], arr[1])
+  answer[1] = Math.max(answer[0], arr[1] ?? 0)
   for (let i = 2; i < arr.length; i++) {
     answer[i] = Math.max(answer[i - 2] + arr[i], answer[i - 1])
   }
