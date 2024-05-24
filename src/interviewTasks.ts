@@ -170,8 +170,6 @@ const producePath = (start: string, end: string, previous: Map<string, string>) 
   return result.reverse()
 }
 
-console.log('findFlightPath:', findFlightPath('A', 'S').then(console.log)) // ['A', 'D', 'F', 'S']
-
 // ************ Proxy ************
 
 let user = {

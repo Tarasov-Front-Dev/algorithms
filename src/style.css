@@ -1,8 +1,21 @@
-#app {
-  color: #2c3e50;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  margin-top: 60px;
-  text-align: center;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #696969;
+  font-size: 1.2rem;
+  height: 100dvh;
+  margin: 0;
+  padding: 8px;
+  width: 100%;
+}
+
+input {
+  border: 0 solid transparent;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  padding: 4px 8px;
 }
