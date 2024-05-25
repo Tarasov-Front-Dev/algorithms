@@ -1,8 +1,11 @@
 'use strict'
 
+// 	https://www.youtube.com/watch?v=R4UHOLZ-bEk
+
 import { composeAsync, curry } from './shared/utils'
 
 // ******* Subarray Sum ***********
+// Префиксные суммы в несортированном массиве	https://www.youtube.com/watch?v=v5Y4vQ824cI
 // Find all subarray sums equal to k. Return quantity of the subarrays
 // Arguments: [4, 2, 2, 1, 2, -3, 5, -8], 5 // Result: 5 (subarrays)
 
@@ -23,6 +26,7 @@ export function subarraySum(arr: number[], k: number) {
 }
 
 // ************ Sliding Window *************
+// Метод скользящего окна	https://www.youtube.com/watch?v=kzPUYPfzT9A
 // Find longest substring with no repeating chars. Return a length of the substring
 // Arguments: 'abcbada' // Result: 4 (longest substring)
 
@@ -40,6 +44,7 @@ export const slidingWindow = (str: string) => {
 }
 
 // ************ Dynamic Programming ************
+// Грабим Дома на Собеседовании в Google	https://www.youtube.com/watch?v=VQvyqrJltcU
 // Find the greatest sum of an array's elements. You can not sum neighbor element
 // Arguments: [4, 11, 10, 1, 2, 8, 5] // Result: 22 (max sum sequence)
 
@@ -55,6 +60,7 @@ export const dp = (arr: number[]) => {
 }
 
 // *************** Breadth-First Search ****************
+// Поиск в Ширину на шахматной доске	https://www.youtube.com/watch?v=tgWTBwjy--A
 // ChessBoard. Count a knight moves necessary to reach curtain field
 // Arguments: 2, 1 // Result: 1 (move)
 
@@ -104,7 +110,7 @@ const getMoves = (position: string, visited: Set<string>) => {
 }
 
 // *********** Find the circular reference in LinkedList **************
-
+// Поиск начала цикла в односвязном списке	https://www.youtube.com/watch?v=4KCQpH4zQPE
 // The given List may containt circular reference. Find it or return null
 
 export type List = {
@@ -141,7 +147,7 @@ export function findCircularRef(list: List) {
 }
 
 // ********* Search in 2D Matrix ***********
-
+// Поиск значения в отсортированной 2D матрице	https://www.youtube.com/watch?v=iUSxT3-d5EU
 // input: [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]
 // output: 5
 
@@ -285,16 +291,15 @@ export const levelOrder = function (root: Node | null) {
 }
 
 // ******* DFS in Binary tree *******
+// Поиск максимальной суммы в бинарном дереве	https://www.youtube.com/watch?v=R4UHOLZ-bEk
+// Find max sum path in the tree from the root
+// input: { val:1, left:{ val:4, left:{ val:2 }, right:{ val:3,left:{ val:2 }}}, right:{ val:7, left:{ val:5 }, right:{ val:4 }}}
 
 export interface BinaryTree {
   val: number
   left?: BinaryTree
   right?: BinaryTree
 }
-
-// Find max sum path in the tree from the root
-
-// input: { val:1, left:{ val:4, left:{ val:2 }, right:{ val:3,left:{ val:2 }}}, right:{ val:7, left:{ val:5 }, right:{ val:4 }}}
 
 export function maxSumPath(root?: BinaryTree): number {
   if (!root || !root.val) {
