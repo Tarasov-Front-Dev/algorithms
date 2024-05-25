@@ -12,6 +12,7 @@ import {
   searchMatrix,
   slidingWindow,
   subarraySum,
+  wordBreak,
 } from './algorithms'
 
 describe('subarraySum', () => {
@@ -356,5 +357,21 @@ describe('dfs', () => {
       right: { val: -7, left: { val: 5 }, right: { val: 4 } },
     }
     expect(maxSumPath(testTree)).toBe(10)
+  })
+})
+
+describe('140. Word Break II', () => {
+  it('should return proper strings from the dict', () => {
+    expect(wordBreak('catsanddog', ['cat', 'cats', 'and', 'sand', 'dog'])).toStrictEqual([
+      'cats and dog',
+      'cat sand dog',
+    ])
+    expect(
+      wordBreak('pineapplepenapple', ['apple', 'pen', 'applepen', 'pine', 'pineapple'])
+    ).toStrictEqual([
+      'pine apple pen apple',
+      'pineapple pen apple',
+      'pine applepen apple',
+    ])
   })
 })

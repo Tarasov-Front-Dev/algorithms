@@ -164,34 +164,14 @@ export function searchMatrix(m: number[][], target: number) {
 
 // ******** 937. Reorder Data in Log Files ********
 
+// Reorder these logs so that:
+// The letter-logs come before all digit-logs.
+// The letter-logs are sorted lexicographically by their contents. If their contents are the same, then sort them lexicographically by their identifiers.
+// The digit-logs maintain their relative ordering.
+// Return the final order of the logs.
+
 // input: ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
 // output: ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
-
-// export const reorderLogFiles = function (logs: string[]) {
-//   const body = (s: string) => s.slice(s.indexOf(' ') + 1) // get the body after indentifier
-//   const isNum = (s: string) => /\d/.test(s)
-
-//   // if body same then compare identifier
-//   const compare = (a: string, b: string) => {
-//     const n = body(a).localeCompare(body(b))
-//     if (n !== 0) {
-//       return n
-//     }
-//     return a.localeCompare(b)
-//   }
-
-//   const digitLogs = []
-//   const letterLogs = []
-//   for (const log of logs) {
-//     if (isNum(body(log))) {
-//       digitLogs.push(log)
-//     } else {
-//       letterLogs.push(log)
-//     }
-//   }
-
-//   return letterLogs.sort(compare).concat(digitLogs)
-// }
 
 export function reorderLogFiles(logs: string[]) {
   const compare = (a: string, b: string) => {
@@ -472,3 +452,30 @@ async function placeInputToShowPokemon() {
   }
 }
 placeInputToShowPokemon()
+
+// ****** 140. Word Break II ******
+
+// Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
+// Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+// Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
+// Output: ["cats and dog","cat sand dog"]
+
+export const wordBreak = (s: string, wordDict: string[]) => {
+  const dict = new Set(wordDict)
+  const dp = Array.from({ length: s.length + 1 }, () => []) as string[][]
+  dp[0] = ['']
+  for (let i = 1; i <= s.length + 1; i++) {
+    const temp = []
+    for (let j = 0; j < i; j++) {
+      const prefix = s.slice(j, i)
+      if (dict.has(prefix)) {
+        for (const substr of dp[j]) {
+          temp.push(`${substr} ${prefix}`.trim())
+        }
+      }
+    }
+    dp[i] = temp
+  }
+  return dp.at(-1)!.reverse()
+}
