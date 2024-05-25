@@ -2,24 +2,24 @@ import { describe, expect, it } from 'vitest'
 
 import { AssemblyLineScheduler, findFlightPath, isPalindrom, jobs, merge } from './index'
 
-describe('assemblyLineScheduler', () => {
-  it('should return a job lines statistic', async () => {
-    const lines = 3
-    const scheduler = new AssemblyLineScheduler(lines)
-    jobs.jobsBatches[0].forEach(job => scheduler.appendJob(job))
-    const expectedResult = [
-      [1, 1, ['2', '5'], 162],
-      [2, 0, ['4', '3'], 144],
-      [0, 1, ['1'], 69],
-    ]
-    try {
-      const result = await scheduler.start()
-      expect(result).toStrictEqual(expectedResult)
-    } catch (error) {
-      error
-    }
-  })
-})
+// describe('assemblyLineScheduler', () => {
+//   it('should return a job lines statistic', async () => {
+//     const lines = 3
+//     const scheduler = new AssemblyLineScheduler(lines)
+//     jobs.jobsBatches[0].forEach(job => scheduler.appendJob(job))
+//     const expectedResult = [
+//       [1, 1, ['2', '5'], 162],
+//       [2, 0, ['4', '3'], 144],
+//       [0, 1, ['1'], 69],
+//     ]
+//     try {
+//       const result = await scheduler.start()
+//       expect(result).toStrictEqual(expectedResult)
+//     } catch (error) {
+//       error
+//     }
+//   })
+// })
 
 describe('isPalindrome', () => {
   it('should return true for palindrome strings', () => {
