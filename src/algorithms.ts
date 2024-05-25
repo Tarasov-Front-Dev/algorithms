@@ -151,18 +151,13 @@ export function findCircularRef(list: List) {
 // input: [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]
 // output: 5
 
-export const searchMatrix = function (matrix: number[][], target: number) {
-  let row = 0
-  let col = matrix[0].length
-  while (row < matrix.length && col >= 0) {
-    if (matrix[row][col] === target) {
-      return true
-    }
-    if (matrix[row][col] < target) {
-      row++
-    } else {
-      col--
-    }
+export function searchMatrix(m: number[][], target: number) {
+  let row = 0,
+    col = m[0].length
+  while (row < m.length && col >= 0) {
+    if (m[row][col] === target) return true
+    else if (m[row][col] < target) row++
+    else col--
   }
   return false
 }
