@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   List,
   bfs,
+  dailyTemperatures,
   dp,
   findCircularRef,
   levelOrder,
@@ -373,5 +374,26 @@ describe('140. Word Break II', () => {
       'pineapple pen apple',
       'pine applepen apple',
     ])
+  })
+})
+
+describe('dailyTemperatures', () => {
+  it('should return correct result for example input', () => {
+    const temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+    const expectedResult = [1, 1, 4, 2, 1, 1, 0, 0]
+    const actualResult = dailyTemperatures(temperatures)
+    expect(actualResult).toEqual(expectedResult)
+  })
+  it('should return correct result for example input', () => {
+    const temperatures = [30, 40, 50, 60]
+    const expectedResult = [1, 1, 1, 0]
+    const actualResult = dailyTemperatures(temperatures)
+    expect(actualResult).toEqual(expectedResult)
+  })
+  it('should return correct result for example input', () => {
+    const temperatures = [30, 60, 90]
+    const expectedResult = [1, 1, 0]
+    const actualResult = dailyTemperatures(temperatures)
+    expect(actualResult).toEqual(expectedResult)
   })
 })
