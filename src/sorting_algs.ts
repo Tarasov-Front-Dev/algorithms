@@ -156,7 +156,7 @@ class Sort {
 
 // /*****************Merge Sort By Index********************/
 
-// const mergeSortByIndex = arr => {
+// function mergeSortByIndex(arr: number[]): number[] {
 //   if (arr.length < 2) return arr
 //   const mid = Math.floor(arr.length / 2)
 //   const left = mergeSortByIndex(arr.slice(0, mid))
@@ -164,14 +164,16 @@ class Sort {
 //   return merge(left, right)
 // }
 
-// const merge = (left, right) => {
-//   const sorted = []
+// function merge(left: number[], right: number[]): number[] {
+//   const sorted = Array.from({ length: left.length + right.length }, () => 0)
 //   let l = 0,
-//     r = 0
+//     r = 0,
+//     i = 0
 //   while (l < left.length && r < right.length) {
-//     if (left[l] < right[r]) sorted.push(left[l++])
-//     else sorted.push(right[r++])
+//     if (left[l] < right[r]) sorted[i++] = left[l++]
+//     else sorted[i++] = right[r++]
 //   }
+//   sorted.length = i
 //   return sorted.concat(left.slice(l), right.slice(r))
 // }
 
