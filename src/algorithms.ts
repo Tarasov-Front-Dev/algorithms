@@ -167,27 +167,46 @@ export function searchMatrix(m: number[][], target: number) {
 // input: ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
 // output: ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
 
-export const reorderLogFiles = function (logs: string[]) {
-  const body = (s: string) => s.slice(s.indexOf(' ') + 1) // get the body after indentifier
-  const isNum = (s: string) => /\d/.test(s)
+// export const reorderLogFiles = function (logs: string[]) {
+//   const body = (s: string) => s.slice(s.indexOf(' ') + 1) // get the body after indentifier
+//   const isNum = (s: string) => /\d/.test(s)
 
-  // if body same then compare identifier
+//   // if body same then compare identifier
+//   const compare = (a: string, b: string) => {
+//     const n = body(a).localeCompare(body(b))
+//     if (n !== 0) {
+//       return n
+//     }
+//     return a.localeCompare(b)
+//   }
+
+//   const digitLogs = []
+//   const letterLogs = []
+//   for (const log of logs) {
+//     if (isNum(body(log))) {
+//       digitLogs.push(log)
+//     } else {
+//       letterLogs.push(log)
+//     }
+//   }
+
+//   return letterLogs.sort(compare).concat(digitLogs)
+// }
+
+export function reorderLogFiles(logs: string[]) {
   const compare = (a: string, b: string) => {
-    const n = body(a).localeCompare(body(b))
-    if (n !== 0) {
-      return n
-    }
-    return a.localeCompare(b)
+    const compareFn = new Intl.Collator('en').compare
+    const n = compareFn(body(a), body(b))
+    return Boolean(n) ? n : compareFn(a, b)
   }
+  const isNum = (str: string) => /\d/.test(str[0])
+  const body = (str: string) => str.slice(str.indexOf(' ') + 1)
 
   const digitLogs = []
   const letterLogs = []
   for (const log of logs) {
-    if (isNum(body(log))) {
-      digitLogs.push(log)
-    } else {
-      letterLogs.push(log)
-    }
+    if (isNum(body(log))) digitLogs.push(log)
+    else letterLogs.push(log)
   }
 
   return letterLogs.sort(compare).concat(digitLogs)

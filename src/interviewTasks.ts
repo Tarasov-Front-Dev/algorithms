@@ -114,13 +114,14 @@ export const jobs: Fabric = {
 
 export const isPalindrom = (str: string) => {
   if (!str.length) return false
+  const compareFn = Intl.Collator('en', { sensitivity: 'base' }).compare
   const regexp = /[^a-z]/i
   let l = 0,
     r = str.length - 1
   while (l <= r) {
     while (regexp.test(str[l])) l++
     while (regexp.test(str[r])) r--
-    if (str[l].toLowerCase() !== str[r].toLowerCase()) return false
+    if (compareFn(str[l], str[r])) return false
     l++
     r--
   }
