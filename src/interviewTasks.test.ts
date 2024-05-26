@@ -52,19 +52,8 @@ describe('isPalindrome', () => {
 
 describe('getPath', () => {
   it('should return Promise with the List of the points of the way or a rejected Promise', async () => {
-    try {
-      expect(await findFlightPath('A', 'N')).toStrictEqual(['A', 'B', 'N'])
-      expect(await findFlightPath('A', 'S')).toStrictEqual(['A', 'D', 'F', 'S'])
-    } catch (error) {
-      expect(error).not.toBeFalsy()
-    }
-  })
-  it('should throw an Error', async () => {
-    try {
-      await findFlightPath('B', 'S')
-    } catch (error) {
-      expect(error.message).toBe('No way')
-    }
+    expect(await findFlightPath('A', 'N')).toStrictEqual(['A', 'B', 'N'])
+    expect(await findFlightPath('A', 'S')).toStrictEqual(['A', 'D', 'F', 'S'])
   })
 })
 

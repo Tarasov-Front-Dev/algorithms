@@ -143,32 +143,31 @@ async function fetchFlightPaths(): Promise<Graph> {
 
 export const findFlightPath = async (start: string, end: string) => {
   const graph = await fetchFlightPaths()
-  const queue = new Set(start)
+  const queue = new Set([start])
   const visited = new Set<string>()
   const previous = new Map<string, string>()
-  label: for (const node of queue) {
+
+  for (const node of queue) {
     visited.add(node)
-    const neighbours = getNeigbours(graph[node as keyof typeof graph], visited)
-    for (const neighbour of neighbours) {
-      if (!previous.has(neighbour)) previous.set(neighbour, node)
-      if (neighbour === end) break label
-      queue.add(neighbour)
+    const neigbours = getNeighbours(graph[node as keyof Graph], visited)
+    for (const neigbour of neigbours) {
+      if (!previous.has(neigbour)) previous.set(neigbour, node)
+      if (neigbour === end) return producePath(start, end, previous)
+      queue.add(neigbour)
     }
   }
-  if (!previous.has(end)) throw new Error('No way')
-  return producePath(start, end, previous)
+  throw new Error('No way')
 }
 
-const getNeigbours = (node: string[] = [], visited: Set<string>) =>
-  node.reduce((acc, v) => (visited.has(v) ? acc : acc.add(v)), new Set<string>())
+const getNeighbours = (node: string[] = [], visited: Set<string>) =>
+  node.reduce((acc, v) => (visited.has(v) ? acc : acc.concat([v])), [] as string[])
 
 const producePath = (start: string, end: string, previous: Map<string, string>) => {
-  const result = [end]
-  while (end !== start) {
-    end = previous.get(end)!
-    result.push(end)
+  const answer = [end]
+  while (start !== end) {
+    answer.push((end = previous.get(end)!))
   }
-  return result.reverse()
+  return answer.reverse()
 }
 
 // ************ Proxy ************
