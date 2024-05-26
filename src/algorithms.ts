@@ -461,23 +461,23 @@ placeInputToShowPokemon()
 // Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
 // Output: ["cats and dog","cat sand dog"]
 
-export const wordBreak = (s: string, wordDict: string[]) => {
+export function wordBreak(s: string, wordDict: string[]) {
   const dict = new Set(wordDict)
-  const dp = Array.from({ length: s.length + 1 }, () => []) as string[][]
-  dp[0] = ['']
-  for (let i = 1; i <= s.length + 1; i++) {
-    const temp = []
+  const answer = Array.from({ length: s.length + 1 }, () => [] as string[])
+  answer[0] = ['']
+  for (let i = 1; i < s.length + 1; i++) {
+    const temp = [] as string[]
     for (let j = 0; j < i; j++) {
       const prefix = s.slice(j, i)
       if (dict.has(prefix)) {
-        for (const substr of dp[j]) {
+        for (const substr of answer[j]) {
           temp.push(`${substr} ${prefix}`.trim())
         }
       }
     }
-    dp[i] = temp
+    answer[i] = temp
   }
-  return dp.at(-1)!.reverse()
+  return answer.at(-1)?.reverse()
 }
 
 // ******* 739. Daily Temperatures *******
