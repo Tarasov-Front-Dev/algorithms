@@ -497,3 +497,27 @@ export const dailyTemperatures = function (t: number[]) {
   }
   return answer
 }
+
+// ******* 347. Top K Frequent Elements *******
+// Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+
+// Input: nums = [1,1,1,2,2,3], k = 2
+// Output: [1,2]
+
+export function topKFrequent(nums: number[], k: number) {
+  const answer = Array.from({ length: k }, () => [null, null])
+  const map = new Map()
+  for (const num of nums) {
+    map.set(num, (map.get(num) ?? 0) + 1)
+  }
+  for (const [num, qty] of map.entries()) {
+    const idx = answer.findIndex(([_, _qty]) => (_qty ?? -Infinity) < qty)
+    if (~idx) {
+      for (let i = k - 1; i > idx; i--) {
+        answer[i] = answer[i - 1]
+      }
+      answer[idx] = [num, qty]
+    }
+  }
+  return answer.map(([num]) => num)
+}

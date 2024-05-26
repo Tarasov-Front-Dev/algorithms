@@ -13,6 +13,7 @@ import {
   searchMatrix,
   slidingWindow,
   subarraySum,
+  topKFrequent,
   wordBreak,
 } from './algorithms'
 
@@ -395,5 +396,53 @@ describe('dailyTemperatures', () => {
     const expectedResult = [1, 1, 0]
     const actualResult = dailyTemperatures(temperatures)
     expect(actualResult).toEqual(expectedResult)
+  })
+})
+
+describe('topKFrequent', () => {
+  it('should return the correct result when given an array with duplicates and k equals to the frequency of some elements', () => {
+    const nums = [1, 1, 1, 2, 2, 3]
+    const k = 2
+    const expectedResult = [1, 2]
+    const actualResult = topKFrequent(nums, k)
+
+    expect(actualResult).toStrictEqual(expectedResult)
+  })
+
+  it('should return the correct result when given an array without duplicates and k is less than the total number of unique elements', () => {
+    const nums = [1, 2, 3, 4, 5]
+    const k = 2
+    const expectedResult = [1, 2]
+    const actualResult = topKFrequent(nums, k)
+    expect(actualResult).toStrictEqual(expectedResult)
+  })
+
+  it('should return the correct result when given an array without duplicates and k is equal to the total number of unique elements', () => {
+    const nums = [1, 2, 3, 4, 5]
+    const k = 5
+    const expectedResult = [1, 2, 3, 4, 5]
+    const actualResult = topKFrequent(nums, k)
+    expect(actualResult).toStrictEqual(expectedResult)
+  })
+  it('should return the correct result when given an array without duplicates and k is equal to the total number of unique elements', () => {
+    const nums = [1]
+    const k = 1
+    const expectedResult = [1]
+    const actualResult = topKFrequent(nums, k)
+    expect(actualResult).toStrictEqual(expectedResult)
+  })
+  it('should return the correct result when given an array without duplicates and k is equal to the total number of unique elements', () => {
+    const nums = [5, -3, 9, 1, 7, 7, 9, 10, 2, 2, 10, 10, 3, -1, 3, 7, -9, -1, 3, 3]
+    const k = 3
+    const expectedResult = [3, 7, 10]
+    const actualResult = topKFrequent(nums, k)
+    expect(actualResult).toStrictEqual(expectedResult)
+  })
+  it('should return the correct result when given an array without duplicates and k is equal to the total number of unique elements', () => {
+    const nums = [-1, 1, 4, -4, 3, 5, 4, -2, 3, -1]
+    const k = 3
+    const expectedResult = [-1, 4, 3]
+    const actualResult = topKFrequent(nums, k)
+    expect(actualResult).toStrictEqual(expectedResult)
   })
 })
