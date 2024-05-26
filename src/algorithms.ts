@@ -521,3 +521,185 @@ export function topKFrequent(nums: number[], k: number) {
   }
   return answer.map(([num]) => num)
 }
+
+// ********* Graphs *********
+
+const graph = {
+  A: { B: 2, C: 1 },
+  B: { F: 7 },
+  C: { D: 5, E: 2 },
+  D: { F: 2 },
+  E: { F: 1 },
+  F: { G: 1 },
+  G: {},
+}
+
+type Graph = { [x: string]: { [y: string]: number } }
+
+export const dejkstra = (graph: Graph, start: string, end: string) => {
+  const queue = [start]
+  const previous = new Map<string, { node: string; dist: number }>()
+  previous.set(start, { node: '', dist: 0 })
+
+  for (const node of queue) {
+    const nodeDist = previous.get(node)!.dist
+    for (const [neighbour, dist] of Object.entries(graph[node])) {
+      const prevDist = previous.get(neighbour)?.dist ?? Infinity
+      const newDist = nodeDist + dist
+      if (prevDist > newDist) {
+        previous.set(neighbour, { node, dist: newDist })
+      }
+      queue.push(neighbour)
+    }
+  }
+  return producePath(previous, end)
+}
+
+function producePath(previous: Map<string, { node: string; dist: number }>, end: string) {
+  const answer = [] as [string, number][]
+  while (end) {
+    answer.push([end, previous.get(end)!.dist])
+    end = previous.get(end)!.node
+  }
+  return { path: answer.reverse(), ditances: previous }
+}
+
+console.log(dejkstra(graph, 'A', 'G'))
+console.log('graph:', graph)
+
+// const breadthSearch = (graph, start, end) => {
+//   const queue = [start]
+//   const unique = new Set(start)
+//   for (let i = 0; i < queue.length; i++) {
+//     const node = graph[queue[i]]
+//     for (const neighbor in node) {
+//       if (neighbor === end) return true
+//       if (!unique.has(neighbor)) {
+//         unique.add(neighbor)
+//         queue.push(neighbor)
+//       }
+//     }
+//   }
+//   return false
+// }
+
+// console.log(breadthSearch(graph, 'a', 'g'))
+
+// ******* Tree *******
+
+// const tree = [
+//   {
+//     v: 5,
+//     c: [
+//       {
+//         v: 10,
+//         c: [
+//           {
+//             v: 11,
+//           },
+//         ],
+//       },
+//       {
+//         v: 7,
+//         c: [
+//           {
+//             v: 5,
+//             c: [
+//               {
+//                 v: 1,
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     v: 5,
+//     c: [
+//       {
+//         v: 10,
+//       },
+//       {
+//         v: 15,
+//       },
+//     ],
+//   },
+// ]
+
+// function sumTreeValuseIter(tree) {
+//   if (!tree.length) return 0
+//   const stack = [...tree]
+//   let sum = 0
+//   while (stack.length) {
+//     const node = stack.pop()
+//     console.log('node.v:', node.v)
+//     sum += node.v ?? 0
+//     if (node.c) stack.push(...node.c)
+//   }
+//   return sum
+// }
+
+// console.log('sumTreeValuseIter:', sumTreeValuseIter(tree))
+
+// ******* Binary Tree *******
+
+// class BinaryTree {
+//   constructor() {
+//     this.root = null
+//   }
+
+//   add(value) {
+//     if (!this.root) {
+//       this.root = new TreeNode(value)
+//     } else {
+//       let node = this.root
+//       let newNode = new TreeNode(value)
+//       while (node) {
+//         if (value > node.value) {
+//           if (!node.right) {
+//             break
+//           }
+//           node = node.right
+//         } else {
+//           if (!node.left) {
+//             break
+//           }
+//           node = node.left
+//         }
+//       }
+//       if (value > node.value) {
+//         node.right = newNode
+//       } else {
+//         node.left = newNode
+//       }
+//     }
+//   }
+
+//   print(root = this.root) {
+//     if (!root) {
+//       return true
+//     }
+//     console.log(root.value)
+//     this.print(root.left)
+//     this.print(root.right)
+//   }
+// }
+
+// class TreeNode {
+//   constructor(value) {
+//     this.value = value
+//     this.left = null
+//     this.right = null
+//   }
+// }
+
+// const tree = new BinaryTree()
+// tree.add(5)
+// tree.add(2)
+// tree.add(6)
+// tree.add(2)
+// tree.add(1)
+// tree.print()
+
+// console.log(tree)

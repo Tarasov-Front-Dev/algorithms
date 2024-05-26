@@ -199,7 +199,7 @@ export const promisesWithError = [
   '0',
   1,
   Promise.resolve('c'),
-  new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
+  // new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
 ]
 
 export async function all(promises: any[]) {
