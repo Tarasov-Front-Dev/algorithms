@@ -82,13 +82,16 @@ export const recursiveFlat = (arr: any[]) => {
 Перезаписывать элементы в существующем массиве по промежуточным результатам без его клонирования/копирования
 */
 
+// input [0, 1, 2, 3, 4, 5]
+// output [1, 2, 4, 6, 8, 4]
+
 export const returnSumNestElement = (arr: number[]) => {
   if (arr.length === 1) return arr
   let prev = 0
   for (let i = 0; i < arr.length; i++) {
-    const sum = prev + (arr[i + 1] ?? 0)
+    const newVal = prev + (arr[i + 1] ?? 0)
     prev = arr[i]
-    arr[i] = sum
+    arr[i] = newVal
   }
   return arr
 }
@@ -106,10 +109,9 @@ const priceList = {
 type Key = keyof typeof priceList
 
 export const getPriceList = (cost: number | string) => {
-  if (!Number(cost) || Number(cost) === 0) return false
-
-  const partial = Math.ceil(+cost / 10) - 1
-  const key1 = `${partial ? partial : ''}1-${partial + 1}0` as Key
+  if (!Number(cost)) return false
+  const partial = Math.ceil(Number(cost) / 10) - 1
+  const key1 = `${partial || ''}1-${partial + 1}0` as Key
   const key2 = Object.keys(priceList).at(-1) as Key
   return priceList[key1] ?? priceList[key2]
 }
@@ -128,7 +130,7 @@ reduce(["a", "b", "c", "d"], sum, ""); // => abcd
 
 export function reduce(
   arr: any[],
-  cb: (acc: any, el: any, idx: any, arr: any[]) => any,
+  cb: (acc: any, item: any, i: number, arr: any) => any,
   init?: any
 ) {
   let i = 0
@@ -147,27 +149,24 @@ Description
 Дописать функцию в которой элементы массива будут последовательно выводиться в консоль спустя промежуток времени указанный в атрибуте timeout
 */
 
-// const ARRAY = [
-//   { name: "first", timeout: 2000 },
-//   { name: "second", timeout: 1500 },
-//   { name: "third", timeout: 1000 },
-//   { name: "fourth" },
-// ];
+// const timeouts = [
+//   { name: 'first', timeout: 2000 },
+//   { name: 'second', timeout: 1500 },
+//   { name: 'third', timeout: 1000 },
+//   { name: 'fourth' },
+// ]
+// type Timeouts = typeof timeouts
 
-// function run(arr, i = 0) {
-//   if (!arr.length) return;
-//   if (!Array.isArray(arr)) return;
+// function run(timeouts: Timeouts, i = 0) {
+//   if (!timeouts.length) return
+//   if (!Array.isArray(timeouts)) return
 
-//   const { name, timeout = 0 } = arr[i];
-//   if (!name) return;
+//   const { name, timeout = 0 } = timeouts[i]
 //   setTimeout(() => {
-//     console.log(name);
-//     i++;
-//     if (i < arr.length) return run(arr, i);
-//   }, timeout);
+//     console.log(name)
+//     if (i < timeouts.length - 1) return run(timeouts, i + 1)
+//   }, timeout)
 // }
-
-// run(ARRAY);
 
 /**********OddOrEven***********/
 
@@ -180,9 +179,9 @@ Description
 //   return even.length === 1 ? even[0] : odd[0]
 // }
 
-// console.log(evenOdd([1, 3, 5, 7, 8, 9]) === 8);
-// console.log(evenOdd([2, 4, 6, 8, 9]) === 9);
-// console.log(evenOdd([1]) === 1);
+// console.log(evenOdd([1, 3, 5, 7, 8, 9]) === 8)
+// console.log(evenOdd([2, 4, 6, 8, 9]) === 9)
+// console.log(evenOdd([1]) === 1)
 
 /********Custom Promise.all()******/
 
@@ -191,8 +190,14 @@ export const promises = [
   '1',
   Promise.resolve('a'),
   Promise.resolve('b'),
-  new Promise(resolve => setTimeout(() => resolve('c'), 1000)),
-  new Promise(resolve => setTimeout(() => resolve('d'), 100)),
+  new Promise(resolve => {
+    // console.log(Date.now())
+    setTimeout(() => resolve('c'), 5_000)
+  }),
+  new Promise(resolve => {
+    // console.log(Date.now())
+    setTimeout(() => resolve('d'), 2_000)
+  }),
 ]
 
 export const promisesWithError = [
@@ -202,20 +207,21 @@ export const promisesWithError = [
   // new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
 ]
 
-export async function all(promises: any[]) {
-  const result = []
-  let fullfield = 0
+export const all = async (promises: any[]) => {
+  const answer = Array.from({ length: promises.length }, () => null)
   for (let i = 0; i < promises.length; i++) {
     try {
       const response = await Promise.resolve(promises[i])
-      result[i] = response
-      fullfield++
-      if (fullfield === promises.length) return result
+      answer[i] = response
     } catch (error) {
       throw error
     }
   }
+  return answer
 }
+
+// all(promises).then(console.log).catch(console.log) // [0, '1', 'a', 'b', 'c', 'd']
+// all(promisesWithError).then(console.log).catch(console.log) // 'error'
 
 /**********getIntervals***********/
 
@@ -225,22 +231,22 @@ export async function all(promises: any[]) {
 В случае, если передан не массив — возвращаем пустую строку
 */
 
+// input: [1, 3, 2, 14, 6, 11, 5, 13, 12]
+// output: '1-3, 5, 6, 11-14'
+
 export function getIntervals(arr: number[]) {
-  if (!Array.isArray(arr)) return ''
-  const sortedArr = arr.toSorted((a, b) => a - b)
-  const result = []
+  const answer = [] as (number | string)[]
+  const copied = arr.toSorted((a, b) => a - b)
+  for (let i = 0; i < copied.length; i++) {
+    const start = copied[i]
+    while (i < copied.length && copied[i] + 1 === copied[i + 1]) i++
+    const end = copied[i]
 
-  for (let i = 0; i < sortedArr.length; i++) {
-    const start = sortedArr[i]
-    while (i < sortedArr.length && sortedArr[i] + 1 === sortedArr[i + 1]) i++
-    const end = sortedArr[i]
-
-    if (start === end) result.push(start)
-    if (start + 1 === end) result.push(`${start}, ${end}`)
-    if (start + 1 < end) result.push(`${start}-${end}`)
+    if (start === end) answer.push(start)
+    else if (start + 1 === end) answer.push(start, end)
+    else answer.push(`${start}-${end}`)
   }
-
-  return result.join(', ')
+  return answer.join(', ')
 }
 
 /**********Linked List***********/
@@ -265,50 +271,27 @@ const data = {
 }
 
 export function getValues(list: any) {
-  const result = []
-
+  const answer = [] as number[]
   while (list) {
-    result.push(list.value ?? null)
+    if (list.value) answer.push(list.value)
     list = list.next
   }
-
-  return result
+  return answer
 }
 
 /**********Custom Carry***********/
 
-// function curry(fn) {
-//   return function curried() {
-//     if (arguments.length === fn.length) return fn(...arguments);
-//     return (...newArgs) => {
-//       return curried.call(this, ...arguments, ...newArgs);
-//     };
-//   };
-// }
-
-// const user = {
-//   name: 'Tolya',
-//   age: 34,
-//   skills: ['React', 'Typescript', 'HTML+CSS'],
-// }
-
-// function curry(fn) {
-//   return function curried(...args) {
-//     const argsCloned = structuredClone(args)
-//     if (argsCloned.length === fn.length) return fn.apply(this, argsCloned)
-//     return (...newArgs) => {
-//       const target = argsCloned.indexOf(user)
-//       if (~target) argsCloned[target].skills.push('Redux')
-//       return curried.apply(this, argsCloned.concat(newArgs))
-//     }
+// function curry(fn: (...args: any[]) => any) {
+//   return function curried(this: any, ...args: any[]) {
+//     if (args.length === fn.length) return fn.apply(this, args)
+//     else return (...newArgs: any[]) => curried.apply(this, args.concat(newArgs))
 //   }
 // }
 
-// const sum = (a, w, d, x, v, z) => a + d + x + v + z
+// const sum = (a: number, b: number, c: number, d: number, e: number) => a + b + c + d + e
 // const curriedSum = curry(sum)
 
-// console.log(curriedSum()(1)(user)(2, 3)(2)(3), 11)
-// console.log(user)
+// console.log(curriedSum()(1)()(2, 3)(2)(3), 11)
 
 /**********decodeStringFromArr***********/
 
@@ -330,22 +313,19 @@ input = [
 output = 'quick foxjet'
 */
 
-type encodeString = {
+type EncodeString = {
   value: string
   order: number
   expired: boolean
 }
 
-export function decodeStringFromArr(arr: encodeString[]) {
+export function decodeStringFromArr(arr: EncodeString[]) {
   return [
     ...new Set(
       arr
-        .filter(item => !item.expired)
-        .sort((a, b) => a.order - b.order)
-        .reduce((acc, item) => {
-          acc.push(...item.value.split('').reverse())
-          return acc
-        }, [] as string[])
+        .filter(el => !el.expired)
+        .toSorted((a, b) => a.order - b.order)
+        .reduce((acc, el) => acc.concat(el.value.split('').reverse()), [] as string[])
     ),
   ].join('')
 }

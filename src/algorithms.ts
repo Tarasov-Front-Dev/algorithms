@@ -564,9 +564,6 @@ function producePath(previous: Map<string, { node: string; dist: number }>, end:
   return { path: answer.reverse(), ditances: previous }
 }
 
-console.log(dejkstra(graph, 'A', 'G'))
-console.log('graph:', graph)
-
 // const breadthSearch = (graph, start, end) => {
 //   const queue = [start]
 //   const unique = new Set(start)
