@@ -700,3 +700,48 @@ function producePath(previous: Map<string, { node: string; dist: number }>, end:
 // tree.print()
 
 // console.log(tree)
+
+// ******* Amazon. Find the best answer (+ - / *) *******
+// Problem: given an array with numbers apply to them operands in any order to get the biggest answer
+// input: [1, -3, 0.1, -5]
+// output: 150
+
+export const findMax = (nums: number[]) => {
+  if (!nums.length) return 0
+  let max, min
+  max = min = nums[0]
+
+  for (const num of nums.slice(1)) {
+    const mins = Array.from({ length: 4 }, () => 0)
+    const maxs = Array.from({ length: 4 }, () => 0)
+
+    mins[0] = min + num
+    maxs[0] = max + num
+
+    mins[1] = min - num
+    maxs[1] = max - num
+
+    mins[2] = min * num
+    maxs[2] = max * num
+
+    if (num) {
+      mins[3] = min / num
+      maxs[3] = max / num
+    }
+
+    min = Math.min(...mins, ...maxs)
+    max = Math.max(...mins, ...maxs)
+  }
+  return max
+}
+
+// ******* 53. Maximum Subarray *******
+
+export const maxSubArray = (nums: number[]) => {
+  let max = nums[0]
+  for (let i = 1; i < nums.length; i++) {
+    nums[i] = Math.max(0, nums[i - 1]) + nums[i]
+    max = Math.max(max, nums[i])
+  }
+  return max
+}

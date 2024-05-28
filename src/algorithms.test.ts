@@ -6,7 +6,9 @@ import {
   dailyTemperatures,
   dp,
   findCircularRef,
+  findMax,
   levelOrder,
+  maxSubArray,
   maxSumPath,
   orangesRotting,
   reorderLogFiles,
@@ -444,5 +446,33 @@ describe('topKFrequent', () => {
     const expectedResult = [-1, 4, 3]
     const actualResult = topKFrequent(nums, k)
     expect(actualResult).toStrictEqual(expectedResult)
+  })
+})
+
+describe('findMax', () => {
+  it('should return the maximum value when given an array with positive numbers', () => {
+    expect(findMax([1, -3, 0.1, -5])).toBe(150)
+  })
+
+  it('should return the maximum value when given an array with negative numbers', () => {
+    expect(findMax([-1, -2, -3])).toBe(9)
+  })
+
+  it('should return the maximum value when given an array with mixed signs', () => {
+    expect(findMax([1, -2, 3])).toBe(9)
+  })
+
+  it('should return the maximum value when given an empty array', () => {
+    expect(findMax([])).toBe(0)
+  })
+})
+
+describe('maxSubArray', () => {
+  it('should return the maximum subarray sum', () => {
+    expect(maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4])).toBe(6)
+    expect(maxSubArray([1, 2, 3])).toBe(6)
+    expect(maxSubArray([2, 1])).toBe(3)
+    expect(maxSubArray([-2, 1])).toBe(1)
+    expect(maxSubArray([5, -2, 1])).toBe(5)
   })
 })
