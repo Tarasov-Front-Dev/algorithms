@@ -8,6 +8,7 @@ import {
   findCircularRef,
   findMax,
   levelOrder,
+  longestPalindrome,
   maxSubArray,
   maxSumPath,
   orangesRotting,
@@ -474,5 +475,22 @@ describe('maxSubArray', () => {
     expect(maxSubArray([2, 1])).toBe(3)
     expect(maxSubArray([-2, 1])).toBe(1)
     expect(maxSubArray([5, -2, 1])).toBe(5)
+  })
+})
+
+describe('longestPalindrome', () => {
+  it('should return the longest palindrom substring', () => {
+    expect(
+      longestPalindrome(
+        'ibvjkmpyzsifuxcabqqpahjdeuzaybqsrsmbfplxycsafogotliyvhxjtkrbzqxlyfwujzhkdafhebvsdhkkdbhlhmaoxmbkqiwiusngkbdhlvxdyvnjrzvxmukvdfobzlmvnbnilnsyrgoygfdzjlymhprcpxsnxpcafctikxxybcusgjwmfklkffehbvlhvxfiddznwumxosomfbgxoruoqrhezgsgidgcfzbtdftjxeahriirqgxbhicoxavquhbkaomrroghdnfkknyigsluqebaqrtcwgmlnvmxoagisdmsokeznjsnwpxygjjptvyjjkbmkxvlivinmpnpxgmmorkasebngirckqcawgevljplkkgextudqaodwqmfljljhrujoerycoojwwgtklypicgkyaboqjfivbeqdlonxeidgxsyzugkntoevwfuxovazcyayvwbcqswzhytlmtmrtwpikgacnpkbwgfmpavzyjoxughwhvlsxsgttbcyrlkaarngeoaldsdtjncivhcfsaohmdhgbwkuemcembmlwbwquxfaiukoqvzmgoeppieztdacvwngbkcxknbytvztodbfnjhbtwpjlzuajnlzfmmujhcggpdcwdquutdiubgcvnxvgspmfumeqrofewynizvynavjzkbpkuxxvkjujectdyfwygnfsukvzflcuxxzvxzravzznpxttduajhbsyiywpqunnarabcroljwcbdydagachbobkcvudkoddldaucwruobfylfhyvjuynjrosxczgjwudpxaqwnboxgxybnngxxhibesiaxkicinikzzmonftqkcudlzfzutplbycejmkpxcygsafzkgudy'
+      )
+    ).toBe('fklkf')
+    expect(longestPalindrome('babad')).toBe('bab')
+  })
+  it('should return first letter if there is no palindrom substring', () => {
+    expect(longestPalindrome('abcd')).toBe('a')
+  })
+  it('should return empty string if there is no palindrom substring', () => {
+    expect(longestPalindrome('')).toBe('')
   })
 })

@@ -745,3 +745,22 @@ export const maxSubArray = (nums: number[]) => {
   }
   return max
 }
+
+// ******* 5. Longest Palindromic Substring *******
+
+export const longestPalindrome = (s: string) => {
+  let longest = ''
+  for (let i = 0; i < s.length; i++) {
+    check(i, i)
+    check(i, i + 1)
+  }
+  function check(l: number, r: number) {
+    while (l >= 0 && r < s.length && s[l] === s[r]) {
+      const newStr = s.slice(l, r + 1)
+      if (longest.length < newStr.length) longest = newStr
+      l--
+      r++
+    }
+  }
+  return longest
+}
