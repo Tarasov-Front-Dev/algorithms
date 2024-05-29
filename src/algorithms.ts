@@ -463,21 +463,21 @@ placeInputToShowPokemon()
 
 export function wordBreak(s: string, wordDict: string[]) {
   const dict = new Set(wordDict)
-  const answer = Array.from({ length: s.length + 1 }, () => [] as string[])
-  answer[0] = ['']
-  for (let i = 1; i < s.length + 1; i++) {
-    const temp = [] as string[]
-    for (let j = 0; j < i; j++) {
-      const prefix = s.slice(j, i)
+  const dp = Array.from({ length: s.length + 1 }, () => [] as string[])
+  dp[0] = ['']
+  for (let r = 1; r < s.length + 1; r++) {
+    const temp = []
+    for (let l = 0; l < r; l++) {
+      const prefix = s.slice(l, r)
       if (dict.has(prefix)) {
-        for (const substr of answer[j]) {
+        for (const substr of dp[l]) {
           temp.push(`${substr} ${prefix}`.trim())
         }
       }
     }
-    answer[i] = temp
+    dp[r] = temp
   }
-  return answer.at(-1)?.reverse()
+  return dp.at(-1)?.reverse()
 }
 
 // ******* 739. Daily Temperatures *******
