@@ -766,3 +766,20 @@ export const longestPalindrome = (s: string) => {
   }
   return longest
 }
+
+// ******* 22. Generate Parentheses *******
+
+// input: 3
+// output: ["((()))","(()())","(())()","()(())","()()()"]
+
+var generateParenthesis = function (n: number) {
+  let ans = [] as string[]
+  backtracks()
+  return ans
+
+  function backtracks(s = '', left = 0, right = 0) {
+    if (s.length === n * 2) return ans.push(s)
+    if (left < n) backtracks(s + '(', left + 1, right)
+    if (right < left) backtracks(s + ')', left, right + 1)
+  }
+}
