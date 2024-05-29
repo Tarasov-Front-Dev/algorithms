@@ -738,10 +738,12 @@ export const findMax = (nums: number[]) => {
 // ******* 53. Maximum Subarray *******
 
 export const maxSubArray = (nums: number[]) => {
-  let max = nums[0]
-  for (let i = 1; i < nums.length; i++) {
-    nums[i] = Math.max(0, nums[i - 1]) + nums[i]
-    max = Math.max(max, nums[i])
+  if (!nums.length) return 0
+  let max, curr
+  max = curr = nums[0]
+  for (const num of nums.slice(1)) {
+    curr = Math.max(num, num + curr)
+    max = Math.max(max, curr)
   }
   return max
 }
