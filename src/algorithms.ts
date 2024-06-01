@@ -146,17 +146,17 @@ export function findCircularRef(list: List) {
   return slow
 }
 
-// ********* Search in 2D Matrix ***********
+// ********* 240. Search a 2D Matrix II ***********
 // Поиск значения в отсортированной 2D матрице	https://www.youtube.com/watch?v=iUSxT3-d5EU
-// input: [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]
-// output: 5
+// input: [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], 5
+// output: true
 
 export function searchMatrix(m: number[][], target: number) {
   let row = 0,
-    col = m[0].length
+    col = m[0].length - 1
   while (row < m.length && col >= 0) {
     if (m[row][col] === target) return true
-    else if (m[row][col] < target) row++
+    if (m[row][col] < target) row++
     else col--
   }
   return false
