@@ -130,18 +130,18 @@ export const list = {
 list.next.next.next.next.next.next = list.next.next
 
 export function findCircularRef(list: List) {
-  let slow: List | null = list,
-    fast: List | null = list
-  while (fast !== null && fast.next !== null) {
-    slow = slow!.next
+  let slow: List | null = list
+  let fast: List | null = list
+  while (fast && fast.next) {
+    slow = slow?.next!
     fast = fast.next.next
     if (slow === fast) break
   }
-  if (fast === null || fast.next === null) return null
+  if (!fast || !fast.next) return null
   slow = list
   while (slow !== fast) {
-    slow = slow!.next
-    fast = fast!.next
+    slow = slow?.next!
+    fast = fast?.next!
   }
   return slow
 }
