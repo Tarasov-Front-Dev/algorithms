@@ -198,58 +198,47 @@ export function reorderLogFiles(logs: string[]) {
 // output: 4
 
 export function orangesRotting(oranges: number[][]) {
-  const goodOranges = new Set<string>()
-  let currLayer = new Set<string>(
-    oranges.reduce((acc, row, rowIdx) => {
-      acc.push(
-        ...row.reduce((acc, v, col) => {
-          if (v === 2) {
-            acc.push(`${rowIdx}${col}`)
-          }
-          if (v === 1) {
-            goodOranges.add(`${rowIdx}${col}`)
-          }
-          return acc
-        }, [] as string[])
-      )
-      return acc
-    }, [] as string[])
-  )
-  let minute = 0
+  let queue = new Set<string>()
+  const unvisited = new Set<string>()
+  let layer = 0
 
-  while (currLayer.size) {
-    const newLayer = new Set<string>()
-    for (const position of currLayer) {
-      currLayer.delete(position)
-      const moves = getMoves(position)
-      for (const move of moves) {
-        if (goodOranges.has(move)) {
-          goodOranges.delete(move)
-          newLayer.add(move)
-        }
+  oranges.forEach((row, i) =>
+    row.forEach((col, j) => {
+      if (col === 2) queue.add(`${i}${j}`)
+      if (col === 1) unvisited.add(`${i}${j}`)
+    })
+  )
+  while (queue.size) {
+    const newQueue = new Set<string>()
+    for (const node of queue) {
+      const moves = getMoves2(node, unvisited)
+      for (const neighbour of moves) {
+        unvisited.delete(neighbour)
+        newQueue.add(neighbour)
       }
     }
-    if (newLayer.size) {
-      minute++
+    queue = newQueue
+    if (newQueue.size) {
+      layer++
     }
-    currLayer = newLayer
   }
 
-  if (goodOranges.size) {
-    return -1
-  }
-  return minute
+  if (unvisited.size) return -1
+  return layer
+}
 
-  function getMoves(position: string) {
-    const [x, y] = position.split('').map(el => Number(el))
-    const moves = [
-      [x + 1, y],
-      [x - 1, y],
-      [x, y + 1],
-      [x, y - 1],
-    ].map(el => `${el[0]}${el[1]}`)
-    return moves
-  }
+function getMoves2(position: string, unvisited: Set<string>) {
+  const [x, y] = position.split('').map(el => Number(el))
+  const newMoves = [
+    [x + 1, y],
+    [x - 1, y],
+    [x, y + 1],
+    [x, y - 1],
+  ].map(pos => pos.join(''))
+  return newMoves.reduce((acc, pos) => {
+    if (unvisited.has(pos)) acc.push(pos)
+    return acc
+  }, [] as string[])
 }
 
 // ********* 429. N-ary Tree Level Order Traversal *********
@@ -328,7 +317,7 @@ type Pokemon = { sprites: { front_default: string } }
 type PokemonShort = { name: string; url: string }
 
 const _url = new URL('https://pokeapi.co/api/v2/pokemon/')
-async function fetchPokemon(name: string): Promise<string | undefined> {
+async function fetchPokemon(name: string): Promise<string | void> {
   if (!name) throw new Error("Must provide a pokemon's name")
   const url = new URL(_url.href)
   url.pathname += name
@@ -524,15 +513,15 @@ export function topKFrequent(nums: number[], k: number) {
 
 // ********* Graphs *********
 
-const graph = {
-  A: { B: 2, C: 1 },
-  B: { F: 7 },
-  C: { D: 5, E: 2 },
-  D: { F: 2 },
-  E: { F: 1 },
-  F: { G: 1 },
-  G: {},
-}
+// const graph = {
+//   A: { B: 2, C: 1 },
+//   B: { F: 7 },
+//   C: { D: 5, E: 2 },
+//   D: { F: 2 },
+//   E: { F: 1 },
+//   F: { G: 1 },
+//   G: {},
+// }
 
 type Graph = { [x: string]: { [y: string]: number } }
 
@@ -772,12 +761,12 @@ export const longestPalindrome = (s: string) => {
 // input: 3
 // output: ["((()))","(()())","(())()","()(())","()()()"]
 
-var generateParenthesis = function (n: number) {
+export const generateParenthesis = function (n: number) {
   let ans = [] as string[]
   backtracks()
   return ans
 
-  function backtracks(s = '', left = 0, right = 0) {
+  function backtracks(s = '', left = 0, right = 0): void | number {
     if (s.length === n * 2) return ans.push(s)
     if (left < n) backtracks(s + '(', left + 1, right)
     if (right < left) backtracks(s + ')', left, right + 1)

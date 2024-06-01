@@ -7,6 +7,7 @@ import {
   dp,
   findCircularRef,
   findMax,
+  generateParenthesis,
   levelOrder,
   longestPalindrome,
   maxSubArray,
@@ -492,5 +493,18 @@ describe('longestPalindrome', () => {
   })
   it('should return empty string if there is no palindrom substring', () => {
     expect(longestPalindrome('')).toBe('')
+  })
+})
+
+describe('generateParenthesis', () => {
+  it('should return the parenthesis sequence', () => {
+    expect(generateParenthesis(3)).toStrictEqual([
+      '((()))',
+      '(()())',
+      '(())()',
+      '()(())',
+      '()()()',
+    ])
+    expect(generateParenthesis(1)).toStrictEqual(['()'])
   })
 })
