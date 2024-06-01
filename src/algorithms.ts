@@ -772,3 +772,20 @@ export const generateParenthesis = function (n: number) {
     if (right < left) backtracks(s + ')', left, right + 1)
   }
 }
+
+// ******* 463. Island Perimeter *******
+
+export function islandPerimeter(grid: number[][]) {
+  let perimeter = 0
+  grid.forEach((row, i) =>
+    row.forEach((col, j) => {
+      if (col) {
+        if (!grid[i - 1]?.[j]) perimeter++
+        if (!grid[i + 1]?.[j]) perimeter++
+        if (!grid[i]?.[j - 1]) perimeter++
+        if (!grid[i]?.[j + 1]) perimeter++
+      }
+    })
+  )
+  return perimeter
+}

@@ -8,6 +8,7 @@ import {
   findCircularRef,
   findMax,
   generateParenthesis,
+  islandPerimeter,
   levelOrder,
   longestPalindrome,
   maxSubArray,
@@ -506,5 +507,24 @@ describe('generateParenthesis', () => {
       '()()()',
     ])
     expect(generateParenthesis(1)).toStrictEqual(['()'])
+  })
+})
+
+describe('islandPerimeter', () => {
+  it('should return the perimeter of an island', () => {
+    expect(
+      islandPerimeter([
+        [0, 1, 0, 0],
+        [1, 1, 1, 0],
+        [0, 1, 0, 0],
+        [1, 1, 0, 0],
+      ])
+    ).toBe(16)
+  })
+  it('should return the perimeter of an island', () => {
+    expect(islandPerimeter([[1]])).toBe(4)
+  })
+  it('should return the perimeter of an island', () => {
+    expect(islandPerimeter([[1, 0]])).toBe(4)
   })
 })
