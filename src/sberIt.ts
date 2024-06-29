@@ -11,28 +11,28 @@ Task
 */
 
 export function flattenList(arr: any[]) {
-  const flattened = []
-  const stack: any[] = []
-  for (let i = arr.length - 1; i >= 0; i--) {
-    while (stack.length) {
-      if (Array.isArray(stack.at(-1))) stack.push(...stack.pop())
-      else flattened.push(stack.pop())
+    const flattened = []
+    const stack: any[] = []
+    for (let i = arr.length - 1; i >= 0; i--) {
+        while (stack.length) {
+            if (Array.isArray(stack.at(-1))) stack.push(...stack.pop())
+            else flattened.push(stack.pop())
+        }
+        if (Array.isArray(arr[i])) stack.push(arr[i])
+        else flattened.push(arr[i])
     }
-    if (Array.isArray(arr[i])) stack.push(arr[i])
-    else flattened.push(arr[i])
-  }
-  return flattened.reverse()
+    return flattened.reverse()
 }
 
 /********CustomFlat (recursive)********/
 
 export const recursiveFlat = (arr: any[]) => {
-  const flattened: any[] = []
-  arr.forEach(el => {
-    if (Array.isArray(el)) flattened.push(...recursiveFlat(el))
-    else flattened.push(el)
-  })
-  return flattened
+    const flattened: any[] = []
+    arr.forEach(el => {
+        if (Array.isArray(el)) flattened.push(...recursiveFlat(el))
+        else flattened.push(el)
+    })
+    return flattened
 }
 
 /*********Console.log Sequence**********/
@@ -86,34 +86,34 @@ export const recursiveFlat = (arr: any[]) => {
 // output [1, 2, 4, 6, 8, 4]
 
 export const returnSumNestElement = (arr: number[]) => {
-  if (arr.length === 1) return arr
-  let prev = 0
-  for (let i = 0; i < arr.length; i++) {
-    const newVal = prev + (arr[i + 1] ?? 0)
-    prev = arr[i]
-    arr[i] = newVal
-  }
-  return arr
+    if (arr.length === 1) return arr
+    let prev = 0
+    for (let i = 0; i < arr.length; i++) {
+        const newVal = prev + (arr[i + 1] ?? 0)
+        prev = arr[i]
+        arr[i] = newVal
+    }
+    return arr
 }
 
 /*********Get Price************/
 
 const priceList = {
-  '1-10': 1,
-  '11-20': 3,
-  '21-30': 5,
-  '31-40': 9,
-  '41-Infinity': 10,
+    '1-10': 1,
+    '11-20': 3,
+    '21-30': 5,
+    '31-40': 9,
+    '41-Infinity': 10,
 }
 
 type Key = keyof typeof priceList
 
 export const getPriceList = (cost: number | string) => {
-  if (!Number(cost)) return false
-  const partial = Math.ceil(Number(cost) / 10) - 1
-  const key1 = `${partial || ''}1-${partial + 1}0` as Key
-  const key2 = Object.keys(priceList).at(-1) as Key
-  return priceList[key1] ?? priceList[key2]
+    if (!Number(cost)) return false
+    const partial = Math.ceil(Number(cost) / 10) - 1
+    const key1 = `${partial || ''}1-${partial + 1}0` as Key
+    const key2 = Object.keys(priceList).at(-1) as Key
+    return priceList[key1] ?? priceList[key2]
 }
 
 /**********CustomReducer***********/
@@ -129,17 +129,17 @@ reduce(["a", "b", "c", "d"], sum, ""); // => abcd
 */
 
 export function reduce(
-  arr: any[],
-  cb: (acc: any, item: any, i: number, arr: any) => any,
-  init?: any
+    arr: any[],
+    cb: (acc: any, item: any, i: number, arr: any) => any,
+    init?: any
 ) {
-  let i = 0
-  let acc = init ?? arr[i++]
-  while (i < arr.length) {
-    acc = cb(acc, arr[i], i, arr)
-    i++
-  }
-  return acc
+    let i = 0
+    let acc = init ?? arr[i++]
+    while (i < arr.length) {
+        acc = cb(acc, arr[i], i, arr)
+        i++
+    }
+    return acc
 }
 
 /**********Async Timeout***********/
@@ -186,38 +186,38 @@ Description
 /********Custom Promise.all()******/
 
 export const promises = [
-  0,
-  '1',
-  Promise.resolve('a'),
-  Promise.resolve('b'),
-  new Promise(resolve => {
-    // console.log(Date.now())
-    setTimeout(() => resolve('c'), 5_000)
-  }),
-  new Promise(resolve => {
-    // console.log(Date.now())
-    setTimeout(() => resolve('d'), 2_000)
-  }),
+    0,
+    '1',
+    Promise.resolve('a'),
+    Promise.resolve('b'),
+    new Promise(resolve => {
+        // console.log(Date.now())
+        setTimeout(() => resolve('c'), 5_000)
+    }),
+    new Promise(resolve => {
+        // console.log(Date.now())
+        setTimeout(() => resolve('d'), 2_000)
+    }),
 ]
 
 export const promisesWithError = [
-  '0',
-  1,
-  Promise.resolve('c'),
-  // new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
+    '0',
+    1,
+    Promise.resolve('c'),
+    // new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
 ]
 
 export const all = async (promises: any[]) => {
-  const answer = Array.from({ length: promises.length }, () => null)
-  for (let i = 0; i < promises.length; i++) {
-    try {
-      const response = await Promise.resolve(promises[i])
-      answer[i] = response
-    } catch (error) {
-      throw error
+    const answer = Array.from({ length: promises.length }, () => null)
+    for (let i = 0; i < promises.length; i++) {
+        try {
+            const response = await Promise.resolve(promises[i])
+            answer[i] = response
+        } catch (error) {
+            throw error
+        }
     }
-  }
-  return answer
+    return answer
 }
 
 // all(promises).then(console.log).catch(console.log) // [0, '1', 'a', 'b', 'c', 'd']
@@ -235,48 +235,48 @@ export const all = async (promises: any[]) => {
 // output: '1-3, 5, 6, 11-14'
 
 export function getIntervals(arr: number[]) {
-  const answer = [] as (number | string)[]
-  const copied = arr.toSorted((a, b) => a - b)
-  for (let i = 0; i < copied.length; i++) {
-    const start = copied[i]
-    while (i < copied.length && copied[i] + 1 === copied[i + 1]) i++
-    const end = copied[i]
+    const answer = [] as (number | string)[]
+    const copied = arr.toSorted((a, b) => a - b)
+    for (let i = 0; i < copied.length; i++) {
+        const start = copied[i]
+        while (i < copied.length && copied[i] + 1 === copied[i + 1]) i++
+        const end = copied[i]
 
-    if (start === end) answer.push(start)
-    else if (start + 1 === end) answer.push(start, end)
-    else answer.push(`${start}-${end}`)
-  }
-  return answer.join(', ')
+        if (start === end) answer.push(start)
+        else if (start + 1 === end) answer.push(start, end)
+        else answer.push(`${start}-${end}`)
+    }
+    return answer.join(', ')
 }
 
 /**********Linked List***********/
 
 const data = {
-  value: 1,
-  next: {
-    value: 2,
+    value: 1,
     next: {
-      value: 3,
-      next: {
-        value: 4,
+        value: 2,
         next: {
-          value: 5,
-          next: {
-            value: 6,
-          },
+            value: 3,
+            next: {
+                value: 4,
+                next: {
+                    value: 5,
+                    next: {
+                        value: 6,
+                    },
+                },
+            },
         },
-      },
     },
-  },
 }
 
 export function getValues(list: any) {
-  const answer = [] as number[]
-  while (list) {
-    if (list.value) answer.push(list.value)
-    list = list.next
-  }
-  return answer
+    const answer = [] as number[]
+    while (list) {
+        if (list.value) answer.push(list.value)
+        list = list.next
+    }
+    return answer
 }
 
 /**********Custom Carry***********/
@@ -314,20 +314,23 @@ output = 'quick foxjet'
 */
 
 type EncodeString = {
-  value: string
-  order: number
-  expired: boolean
+    value: string
+    order: number
+    expired: boolean
 }
 
 export function decodeStringFromArr(arr: EncodeString[]) {
-  return [
-    ...new Set(
-      arr
-        .filter(el => !el.expired)
-        .toSorted((a, b) => a.order - b.order)
-        .reduce((acc, el) => acc.concat(el.value.split('').reverse()), [] as string[])
-    ),
-  ].join('')
+    return [
+        ...new Set(
+            arr
+                .filter(el => !el.expired)
+                .toSorted((a, b) => a.order - b.order)
+                .reduce(
+                    (acc, el) => acc.concat(el.value.split('').reverse()),
+                    [] as string[]
+                )
+        ),
+    ].join('')
 }
 
 /**********routeOrder***********/
@@ -352,10 +355,10 @@ export function decodeStringFromArr(arr: EncodeString[]) {
 */
 
 type Route = {
-  from: string
-  to: string
+    from: string
+    to: string
 }
 
 export function getRoute(routes: Route[]) {
-  return routes.toSorted((a, b) => (a.to.localeCompare(b.from) ? 0 : -1))
+    return routes.toSorted((a, b) => (a.to.localeCompare(b.from) ? 0 : -1))
 }
