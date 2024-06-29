@@ -19,17 +19,17 @@ export const arr100WithRepeats = [
 // const step = 0
 
 // class Sort {
-//     sortFn: (arr: any[]) => void
+//     sortFn: (arr: any[]) => any[]
 //     sortedArr: any[] = []
 
-//     constructor(sortFn: (arr: any[]) => void) {
+//     constructor(sortFn: (arr: any[]) => any[]) {
 //         this.sortFn = sortFn
 //     }
 
-//     sort(arr: any[]) {
+//     sort(arr: any[]): any[] {
 //         this.sortedArr = arr
 
-//         this.sortFn(this.sortedArr)
+//         this.sortedArr = this.sortFn(this.sortedArr)
 
 //         return this.sortedArr
 //     }
@@ -175,10 +175,12 @@ const merge = (left: number[], right: number[]) => {
     let l = 0,
         r = 0,
         i = 0
+
     while (l < left.length && r < right.length) {
         if (left[l] < right[r]) sorted[i++] = left[l++]
         else sorted[i++] = right[r++]
     }
+
     sorted.length = i
     return sorted.concat(left.slice(l), right.slice(r))
 }
@@ -187,9 +189,9 @@ const merge = (left: number[], right: number[]) => {
 // const mergeSorterByIndex = new Sort(mergeSortByIndex)
 // const mergeSortedByIndexArr = mergeSorterByIndex.sort(arr100WithRepeats)
 // console.log(
-//   'mergeSortedByIndexArr:',
-//   mergeSortedByIndexArr,
-//   `length: ${mergeSortedByIndexArr.length}`
+//     'mergeSortedByIndexArr:',
+//     mergeSortedByIndexArr,
+//     `length: ${mergeSortedByIndexArr.length}`
 // )
 // console.log(`mergeSortedByIndexArr length: ${mergeSortedByIndexArr.length}`)
 // console.log('step:', step)
