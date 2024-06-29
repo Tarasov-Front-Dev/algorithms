@@ -3,11 +3,11 @@
 /********Constants*******/
 // const arr = [9, 4, 2, 3, 8, 3, 4, 5, 9, 1]
 export const arr100WithRepeats = [
-  95, 38, 51, 84, 4, 45, 26, 69, 63, 66, 85, 21, 86, 18, 93, 28, 36, 49, 48, 5, 42, 12,
-  43, 54, 64, 1, 47, 55, 91, 90, 80, 61, 87, 70, 6, 24, 1, 25, 20, 74, 29, 11, 78, 73, 77,
-  10, 62, 68, 60, 37, 9, 88, 46, 81, 8, 89, 16, 50, 95, 94, 27, 83, 82, 15, 2, 17, 32, 31,
-  33, 53, 13, 92, 56, 52, 57, 14, 72, 30, 39, 41, 65, 67, 40, 19, 3, 23, 34, 95, 58, 75,
-  95, 35, 79, 44, 59, 22, 76, 71, 7, 1,
+    95, 38, 51, 84, 4, 45, 26, 69, 63, 66, 85, 21, 86, 18, 93, 28, 36, 49, 48, 5, 42, 12,
+    43, 54, 64, 1, 47, 55, 91, 90, 80, 61, 87, 70, 6, 24, 1, 25, 20, 74, 29, 11, 78, 73,
+    77, 10, 62, 68, 60, 37, 9, 88, 46, 81, 8, 89, 16, 50, 95, 94, 27, 83, 82, 15, 2, 17,
+    32, 31, 33, 53, 13, 92, 56, 52, 57, 14, 72, 30, 39, 41, 65, 67, 40, 19, 3, 23, 34, 95,
+    58, 75, 95, 35, 79, 44, 59, 22, 76, 71, 7, 1,
 ]
 // const createVeryBigArr = () => {
 //   const arr = new Array(1e6).fill(null)
@@ -16,41 +16,48 @@ export const arr100WithRepeats = [
 //   }
 //   return arr
 // }
-// let step = 0
+// const step = 0
 
 // class Sort {
-//   sortFn: (arr: any[]) => void
-//   constructor(sortFn: (arr: any[]) => void) {
-//     this.sortFn = sortFn
-//   }
+//     sortFn: (arr: any[]) => void
+//     sortedArr: any[] = []
 
-//   sort(arr: any[]) {
-//     return this.sortFn(arr)
-//   }
+//     constructor(sortFn: (arr: any[]) => void) {
+//         this.sortFn = sortFn
+//     }
 
-//   checkPerfomanceInSeconds(arr: any[]) {
-//     //Heating
-//     for (let i = 0; i < 1_000_000; i++) {
-//       this.sortFn(arr)
+//     sort(arr: any[]) {
+//         this.sortedArr = arr
+
+//         this.sortFn(this.sortedArr)
+
+//         return this.sortedArr
 //     }
-//     //Execute perfomance check
-//     const start = performance.now()
-//     for (let i = 0; i < 1_000_000; i++) {
-//       this.sortFn(arr)
+
+//     checkPerfomanceInSeconds(arr: any[]) {
+//         //Heating
+//         for (let i = 0; i < 1_000_000; i++) {
+//             this.sortFn(arr)
+//         }
+//         //Execute perfomance check
+//         const start = performance.now()
+//         for (let i = 0; i < 1_000_000; i++) {
+//             this.sortFn(arr)
+//         }
+//         return ((performance.now() - start) / 1000).toFixed(3)
 //     }
-//     return ((performance.now() - start) / 1000).toFixed(3)
-//   }
 // }
 
 // /***********BubbleSort***********/
 
 export const bubbleSort = (arr: number[]) => {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 1; j < arr.length - i; j++) {
-      if (arr[j - 1] > arr[j]) [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 1; j < arr.length - i; j++) {
+            if (arr[j - 1] > arr[j]) [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
+        }
     }
-  }
-  return arr
+
+    return arr
 }
 
 // const bubbleSorter = new Sort(bubbleSort)
@@ -70,14 +77,14 @@ export const bubbleSort = (arr: number[]) => {
 // /***********SelectedSort***********/
 
 export const selectedSort = (arr: number[]) => {
-  for (let i = 0; i < arr.length; i++) {
-    let min = i
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[min] > arr[j]) min = j
+    for (let i = 0; i < arr.length; i++) {
+        let min = i
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[min] > arr[j]) min = j
+        }
+        ;[arr[i], arr[min]] = [arr[min], arr[i]]
     }
-    ;[arr[i], arr[min]] = [arr[min], arr[i]]
-  }
-  return arr
+    return arr
 }
 
 // const selectedSorter = new Sort(selectedSort)
@@ -97,17 +104,17 @@ export const selectedSort = (arr: number[]) => {
 // /***********QuickSort***********/
 
 export const quickSort = (arr: number[]): number[] => {
-  if (arr.length < 2) return arr
-  const pivot = arr[0]
-  const left = []
-  const right = []
-  const middle = []
-  for (const num of arr) {
-    if (num === pivot) middle.push(num)
-    else if (num < pivot) left.push(num)
-    else right.push(num)
-  }
-  return quickSort(left).concat(middle, quickSort(right))
+    if (arr.length < 2) return arr
+    const pivot = arr[0]
+    const left = []
+    const right = []
+    const middle = []
+    for (const num of arr) {
+        if (num === pivot) middle.push(num)
+        else if (num < pivot) left.push(num)
+        else right.push(num)
+    }
+    return quickSort(left).concat(middle, quickSort(right))
 }
 
 // step = 0
@@ -156,24 +163,24 @@ export const quickSort = (arr: number[]): number[] => {
 // /*****************Merge Sort By Index********************/
 
 export const mergeSortByIndex = (arr: number[]): number[] => {
-  if (arr.length < 2) return arr
-  const mid = Math.floor(arr.length / 2)
-  const left = mergeSortByIndex(arr.slice(0, mid))
-  const right = mergeSortByIndex(arr.slice(mid))
-  return merge(left, right)
+    if (arr.length < 2) return arr
+    const mid = Math.floor(arr.length / 2)
+    const left = mergeSortByIndex(arr.slice(0, mid))
+    const right = mergeSortByIndex(arr.slice(mid))
+    return merge(left, right)
 }
 
 const merge = (left: number[], right: number[]) => {
-  const sorted = Array.from({ length: left.length + right.length }, () => 0)
-  let l = 0,
-    r = 0,
-    i = 0
-  while (l < left.length && r < right.length) {
-    if (left[l] < right[r]) sorted[i++] = left[l++]
-    else sorted[i++] = right[r++]
-  }
-  sorted.length = i
-  return sorted.concat(left.slice(l), right.slice(r))
+    const sorted = Array.from({ length: left.length + right.length }, () => 0)
+    let l = 0,
+        r = 0,
+        i = 0
+    while (l < left.length && r < right.length) {
+        if (left[l] < right[r]) sorted[i++] = left[l++]
+        else sorted[i++] = right[r++]
+    }
+    sorted.length = i
+    return sorted.concat(left.slice(l), right.slice(r))
 }
 
 // step = 0
