@@ -4,7 +4,6 @@ const arr100Search = new Array(100)
 for (let i = 0; i < arr100Search.length; i++) {
     arr100Search[i] = i + 1
 }
-const query = 5
 
 /***********LinearSearch***********/
 
@@ -17,26 +16,21 @@ export const linearSearch = (arr: number[], query: number) => {
 
 /***********BinarySearch***********/
 
-// const binarySearch = (arr, t) => {
-//   let l = 0,
-//     r = arr.length - 1
-//   while (l <= r) {
-//     const mid = Math.floor((l + r) / 2)
-//     if (arr[mid] === t) return mid
-//     if (arr[mid] < t) l = mid + 1
-//     else r = mid - 1
-//   }
-//   return -1
-// }
-
-export const binarySearch = (arr: number[], t: number) => {
+export const binarySearch = (arr: any[], query: any) => {
     let l = 0,
         r = arr.length - 1
+
     while (l <= r) {
-        const mid = Math.floor((l + r) / 2)
-        if (arr[mid] === t) return mid
-        else if (arr[mid] < t) l = mid + 1
-        else r = mid - 1
+        const mid = Math.floor(l + (r - l) / 2)
+
+        if (arr[mid] === query) return mid
+
+        if (arr[mid] < query) {
+            l = mid + 1
+        } else {
+            r = mid - 1
+        }
     }
+
     return -1
 }

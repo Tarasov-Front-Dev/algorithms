@@ -1,13 +1,10 @@
 // "use strict";
 
 /********Constants*******/
-// const arr = [9, 4, 2, 3, 8, 3, 4, 5, 9, 1]
 export const arr100WithRepeats = [
-    95, 38, 51, 84, 4, 45, 26, 69, 63, 66, 85, 21, 86, 18, 93, 28, 36, 49, 48, 5, 42, 12,
-    43, 54, 64, 1, 47, 55, 91, 90, 80, 61, 87, 70, 6, 24, 1, 25, 20, 74, 29, 11, 78, 73,
-    77, 10, 62, 68, 60, 37, 9, 88, 46, 81, 8, 89, 16, 50, 95, 94, 27, 83, 82, 15, 2, 17,
-    32, 31, 33, 53, 13, 92, 56, 52, 57, 14, 72, 30, 39, 41, 65, 67, 40, 19, 3, 23, 34, 95,
-    58, 75, 95, 35, 79, 44, 59, 22, 76, 71, 7, 1,
+    95, 38, 51, 84, 4, 45, 26, 69, 63, 66, 85, 21, 86, 18, 93, 28, 36, 49, 48, 5, 42, 12, 43, 54, 64, 1, 47, 55, 91, 90, 80, 61, 87, 70, 6,
+    24, 1, 25, 20, 74, 29, 11, 78, 73, 77, 10, 62, 68, 60, 37, 9, 88, 46, 81, 8, 89, 16, 50, 95, 94, 27, 83, 82, 15, 2, 17, 32, 31, 33, 53,
+    13, 92, 56, 52, 57, 14, 72, 30, 39, 41, 65, 67, 40, 19, 3, 23, 34, 95, 58, 75, 95, 35, 79, 44, 59, 22, 76, 71, 7, 1,
 ]
 // const createVeryBigArr = () => {
 //   const arr = new Array(1e6).fill(null)
@@ -76,15 +73,23 @@ export const bubbleSort = (arr: number[]) => {
 
 // /***********SelectedSort***********/
 
-export const selectedSort = (arr: number[]) => {
-    for (let i = 0; i < arr.length; i++) {
+export const selectedSort = (nums: number[]) => {
+    const n = nums.length
+
+    for (let i = 0; i < n; i++) {
         let min = i
-        for (let j = i + 1; j < arr.length; j++) {
-            if (arr[min] > arr[j]) min = j
+
+        for (let j = i + 1; j < n; j++) {
+            if (nums[j] < nums[i]) {
+                min = j
+            }
         }
-        ;[arr[i], arr[min]] = [arr[min], arr[i]]
+
+        // eslint-disable-next-line no-extra-semi
+        ;[nums[i], nums[min]] = [nums[min], nums[i]]
     }
-    return arr
+
+    return nums
 }
 
 // const selectedSorter = new Sort(selectedSort)
@@ -103,17 +108,20 @@ export const selectedSort = (arr: number[]) => {
 
 // /***********QuickSort***********/
 
-export const quickSort = (arr: number[]): number[] => {
-    if (arr.length < 2) return arr
-    const pivot = arr[0]
-    const left = []
-    const right = []
-    const middle = []
-    for (const num of arr) {
+export const quickSort = (nums: number[]): number[] => {
+    if (nums.length < 2) return nums
+
+    const pivot = nums[0]
+    const left = [] as number[]
+    const right = [] as number[]
+    const middle = [] as number[]
+
+    for (const num of nums) {
+        if (num < pivot) left.push(num)
+        if (num > pivot) right.push(num)
         if (num === pivot) middle.push(num)
-        else if (num < pivot) left.push(num)
-        else right.push(num)
     }
+
     return quickSort(left).concat(middle, quickSort(right))
 }
 
@@ -162,27 +170,30 @@ export const quickSort = (arr: number[]): number[] => {
 
 // /*****************Merge Sort By Index********************/
 
-export const mergeSortByIndex = (arr: number[]): number[] => {
-    if (arr.length < 2) return arr
-    const mid = Math.floor(arr.length / 2)
-    const left = mergeSortByIndex(arr.slice(0, mid))
-    const right = mergeSortByIndex(arr.slice(mid))
+export const mergeSortByIndex = (nums: number[]): number[] => {
+    if (nums.length < 2) return nums
+
+    const mid = Math.floor(nums.length / 2)
+    const left = mergeSortByIndex(nums.slice(0, mid))
+    const right = mergeSortByIndex(nums.slice(mid))
+
     return merge(left, right)
 }
 
-const merge = (left: number[], right: number[]) => {
-    const sorted = Array.from({ length: left.length + right.length }, () => 0)
+export const merge = <T extends number[]>(left: T, right: T) => {
+    const sorted = [] as number[]
     let l = 0,
-        r = 0,
-        i = 0
+        r = 0
 
-    while (l < left.length && r < right.length) {
-        if (left[l] < right[r]) sorted[i++] = left[l++]
-        else sorted[i++] = right[r++]
+    while (l < left.length || r < right.length) {
+        if (left[l] < (right[r] ?? Infinity)) {
+            sorted.push(left[l++])
+        } else {
+            sorted.push(right[r++])
+        }
     }
 
-    sorted.length = i
-    return sorted.concat(left.slice(l), right.slice(r))
+    return sorted
 }
 
 // step = 0

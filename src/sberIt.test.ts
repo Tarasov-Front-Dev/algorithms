@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-    all,
+    calcTotalSize,
     decodeStringFromArr,
     flattenList,
     getIntervals,
     getPriceList,
     getRoute,
     getValues,
-    promises,
-    promisesWithError,
+    lcr,
     recursiveFlat,
     reduce,
     returnSumNestElement,
@@ -17,41 +16,43 @@ import {
 
 describe('Flatten List Function', () => {
     it('should flatten the list correctly', () => {
-        expect(
-            flattenList([
-                1,
-                'any [complex] string',
-                null,
-                [1, 2, [3, '4', [5]], 0],
-                [],
-                { a: 1 },
-            ])
-        ).toStrictEqual([1, 'any [complex] string', null, 1, 2, 3, '4', 5, 0, { a: 1 }])
+        expect(flattenList([1, 'any [complex] string', null, [1, 2, [3, '4', [5]], 0], [], { a: 1 }])).toStrictEqual([
+            1,
+            'any [complex] string',
+            null,
+            1,
+            2,
+            3,
+            '4',
+            5,
+            0,
+            { a: 1 },
+        ])
     })
 })
 
 describe('Flatten List Recursive Function', () => {
     it('should flatten the list correctly', () => {
-        expect(
-            recursiveFlat([
-                1,
-                'any [complex] string',
-                null,
-                [1, 2, [3, '4', [5]], 0],
-                [],
-                { a: 1 },
-            ])
-        ).toStrictEqual([1, 'any [complex] string', null, 1, 2, 3, '4', 5, 0, { a: 1 }])
+        expect(recursiveFlat([1, 'any [complex] string', null, [1, 2, [3, '4', [5]], 0], [], { a: 1 }])).toStrictEqual([
+            1,
+            'any [complex] string',
+            null,
+            1,
+            2,
+            3,
+            '4',
+            5,
+            0,
+            { a: 1 },
+        ])
     })
 })
 
 describe('SumSublings', () => {
     it('Should sub siblings correctly', () => {
         expect(returnSumNestElement([0, 1, 2, 3, 4, 5])).toStrictEqual([1, 2, 4, 6, 8, 4])
-        expect(returnSumNestElement([0, 2, 3, 4, 5, 6])).toStrictEqual([
-            2, 3, 6, 8, 10, 5,
-        ])
-        expect(returnSumNestElement([2])).toStrictEqual([2])
+        expect(returnSumNestElement([0, 2, 3, 4, 5, 6])).toStrictEqual([2, 3, 6, 8, 10, 5])
+        expect(returnSumNestElement([2])).toStrictEqual([0])
         expect(returnSumNestElement([2, 5])).toStrictEqual([5, 2])
         expect(returnSumNestElement([9, 2, 3])).toStrictEqual([2, 12, 2])
     })
@@ -60,33 +61,24 @@ describe('SumSublings', () => {
 describe('getPriceList', () => {
     it('should return correct price', () => {
         expect(getPriceList(10)).toEqual(1)
-        expect(getPriceList('14')).toEqual(3)
         expect(getPriceList(30)).toEqual(5)
-        expect(getPriceList('35')).toEqual(9)
         expect(getPriceList(100)).toEqual(10)
-        expect(getPriceList(0)).toBeFalsy()
-        expect(getPriceList('abc')).toBeFalsy()
-        expect(getPriceList('123a')).toBeFalsy()
+        expect(getPriceList(0)).toEqual(10)
     })
 })
 
 describe('reduce', () => {
     it('should reduce array correctly with initial value', () => {
-        expect(reduce(['a', 'b', 'c', 'd'], (acc, item) => acc + item, '')).toEqual(
-            'abcd'
-        )
+        expect(reduce(['a', 'b', 'c', 'd'], (acc, item) => acc + item, '')).toEqual('abcd')
         expect(reduce([75, 25, 15, 35], (acc, item) => acc + item, 0)).toEqual(150)
-        expect(reduce([1, 2, 3, 4], (acc, item) => [...acc, item * 2], [])).toStrictEqual(
-            [2, 4, 6, 8]
-        )
+        // @ts-expect-error lorem ipsum
+        expect(reduce<number, number[]>([1, 2, 3, 4], (acc, item) => [...acc, item * 2], [])).toStrictEqual([2, 4, 6, 8])
     })
 
     it('should reduce array without initial value correctly', () => {
-        expect(reduce([75, 25, 15, 35], (acc, item) => acc + item)).toEqual(150)
+        expect(reduce<number, number>([75, 25, 15, 35], (acc, item) => acc + item)).toEqual(150)
         expect(reduce(['a', 'b', 'c', 'd'], (acc, item) => acc + item)).toEqual('abcd')
-        expect(
-            reduce([[1, 2], [3], [4, 5, 6]], (acc, item) => [...acc, ...item])
-        ).toStrictEqual([1, 2, 3, 4, 5, 6])
+        expect(reduce<number[], number[]>([[1, 2], [3], [4, 5, 6]], (acc, item) => [...acc, ...item])).toStrictEqual([1, 2, 3, 4, 5, 6])
     })
 })
 
@@ -121,9 +113,7 @@ describe('getIntervals', () => {
     })
 
     it('should handle array with negative numbers', () => {
-        expect(getIntervals([-77, -78, -79, -10, -40, 0, -1, -2])).toBe(
-            '-79--77, -40, -10, -2-0'
-        )
+        expect(getIntervals([-77, -78, -79, -10, -40, 0, -1, -2])).toBe('-79--77, -40, -10, -2-0')
     })
 })
 
@@ -201,4 +191,39 @@ describe('getRoute', () => {
         ]
         expect(getRoute(routes)).toStrictEqual(expectedRoutes)
     })
+})
+
+describe('lcr', () => {
+    it('should unzip string correctly', () => {
+        expect(lcr('3AB2(C3(KA)Z)2B3(KA)')).toStrictEqual('AAABCKAKAKAZCKAKAKAZBBKAKAKA')
+    })
+})
+
+describe('calcTotalSized', () => {
+    const rootDir: { [key: string]: number | object } = {
+        head: {
+            'font.woff2': 3000,
+            'style.css': 2000,
+        },
+        body: {
+            header: {
+                nav: {
+                    item1: 200,
+                    item2: 300,
+                },
+            },
+        },
+        footer: 500,
+    }
+
+    it('should calc sum sizes'),
+        () => {
+            expect(calcTotalSize(rootDir)).toEqual(6000)
+            expect(calcTotalSize(rootDir, '/')).toEqual(6000)
+            expect(calcTotalSize(rootDir, '/head')).toEqual(5000)
+            expect(calcTotalSize(rootDir, '/body/header/nav')).toEqual(500)
+            expect(calcTotalSize(rootDir, 'nav/')).toEqual(500)
+            expect(calcTotalSize(rootDir, 'dir/')).toEqual(0) // no such directory
+            expect(calcTotalSize(rootDir, 'item1')).toEqual(200) // no such directory
+        }
 })

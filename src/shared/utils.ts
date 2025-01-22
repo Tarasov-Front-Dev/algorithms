@@ -19,9 +19,7 @@ export function curry(fn: (...args: any[]) => any) {
     }
 }
 
-export function partial<T extends Array<any>, R>(
-    ...args: [(...args: any[]) => R, ...args: any[]]
-) {
+export function partial<T extends Array<any>, R>(...args: [(...args: any[]) => R, ...args: any[]]) {
     const [fn, ...fnArgs] = args
     return function (this: any, ...newArgs: T) {
         return fn.apply(this, fnArgs.concat(newArgs))

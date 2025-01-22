@@ -65,8 +65,7 @@ export const dp = (arr: number[]) => {
 // Arguments: 2, 1 // Result: 1 (move)
 
 export const bfs = (x: number, y: number) => {
-    if (typeof x !== 'number' || typeof y !== 'number')
-        throw new Error('Provide numbers as arguments')
+    if (typeof x !== 'number' || typeof y !== 'number') throw new Error('Provide numbers as arguments')
     const target = String(x) + String(y)
     const start = '00'
     const visited = new Set<string>()
@@ -177,7 +176,7 @@ export function reorderLogFiles(logs: string[]) {
     const compare = (a: string, b: string) => {
         const compareFn = new Intl.Collator('en').compare
         const n = compareFn(body(a), body(b))
-        return Boolean(n) ? n : compareFn(a, b)
+        return n ? n : compareFn(a, b)
     }
     const isNum = (str: string) => /\d/.test(str[0])
     const body = (str: string) => str.slice(str.indexOf(' ') + 1)
@@ -324,18 +323,14 @@ async function fetchPokemon(name: string): Promise<string | void> {
     try {
         const res = await fetch(url)
         const pokemon: Pokemon = await res.json()
-        if (!pokemon?.sprites?.front_default)
-            throw new Error('No front image for the pokemon')
+        if (!pokemon?.sprites?.front_default) throw new Error('No front image for the pokemon')
         else return pokemon.sprites.front_default
     } catch (error) {
         console.log(error)
     }
 }
 
-async function imgCreationPromisified(
-    cb: (err?: Error, data?: HTMLImageElement) => void,
-    src: string | undefined
-) {
+async function imgCreationPromisified(cb: (err?: Error, data?: HTMLImageElement) => void, src: string | undefined) {
     try {
         const img = await new Promise<HTMLImageElement>((res, rej) => {
             imgCreation((err, data) => {
@@ -351,10 +346,7 @@ async function imgCreationPromisified(
     }
 }
 
-function imgCreation(
-    cb: (err?: Error, data?: HTMLImageElement) => void,
-    src: string | undefined
-): HTMLImageElement | undefined {
+function imgCreation(cb: (err?: Error, data?: HTMLImageElement) => void, src: string | undefined): HTMLImageElement | undefined {
     if (!src) return
     const img = document.createElement('img')
     img.src = src
@@ -383,10 +375,7 @@ function imgCreationOnSuccess(img: HTMLImageElement) {
     document.body.prepend(img)
 }
 
-const handeImgCreation = curry(imgCreationHandler)(
-    imgCreationOnError,
-    imgCreationOnSuccess
-)
+const handeImgCreation = curry(imgCreationHandler)(imgCreationOnError, imgCreationOnSuccess)
 const createImg = curry(imgCreationPromisified)(handeImgCreation)
 const fetchPokemonAndCreateImg = composeAsync(createImg, fetchPokemon)
 
@@ -418,10 +407,7 @@ async function placeInputToShowPokemon() {
     input.after(datalist)
     document.body.prepend(form)
 
-    async function submitHandler<T extends HTMLFormElement>(
-        ev: SubmitEvent,
-        input: keyof T
-    ) {
+    async function submitHandler<T extends HTMLFormElement>(ev: SubmitEvent, input: keyof T) {
         ev.preventDefault()
         if (img && 'remove' in img) img.remove()
         const form = ev.currentTarget as T
@@ -513,34 +499,38 @@ export function topKFrequent(nums: number[], k: number) {
 
 // ********* Graphs *********
 
-// const graph = {
-//   A: { B: 2, C: 1 },
-//   B: { F: 7 },
-//   C: { D: 5, E: 2 },
-//   D: { F: 2 },
-//   E: { F: 1 },
-//   F: { G: 1 },
-//   G: {},
-// }
+const graph = {
+    A: { B: 2, C: 1 },
+    B: { F: 7 },
+    C: { D: 5, E: 2 },
+    D: { F: 2 },
+    E: { F: 1 },
+    F: { G: 1 },
+    G: {},
+}
 
 type Graph = { [x: string]: { [y: string]: number } }
 
-export const dejkstra = (graph: Graph, start: string, end: string) => {
+export const dijkstra = (graph: Graph, start: string, end: string) => {
     const queue = [start]
     const previous = new Map<string, { node: string; dist: number }>()
     previous.set(start, { node: '', dist: 0 })
 
     for (const node of queue) {
         const nodeDist = previous.get(node)!.dist
+
         for (const [neighbour, dist] of Object.entries(graph[node])) {
             const prevDist = previous.get(neighbour)?.dist ?? Infinity
             const newDist = nodeDist + dist
+
             if (prevDist > newDist) {
                 previous.set(neighbour, { node, dist: newDist })
             }
+
             queue.push(neighbour)
         }
     }
+
     return producePath(previous, end)
 }
 
@@ -552,6 +542,8 @@ function producePath(previous: Map<string, { node: string; dist: number }>, end:
     }
     return { path: answer.reverse(), ditances: previous }
 }
+
+// console.log('dejkstra', dijkstra(graph, 'A', 'G'));
 
 // const breadthSearch = (graph, start, end) => {
 //   const queue = [start]
@@ -762,7 +754,7 @@ export const longestPalindrome = (s: string) => {
 // output: ["((()))","(()())","(())()","()(())","()()()"]
 
 export const generateParenthesis = function (n: number) {
-    let ans = [] as string[]
+    const ans = [] as string[]
     backtracks()
     return ans
 
@@ -788,4 +780,30 @@ export function islandPerimeter(grid: number[][]) {
         })
     )
     return perimeter
+}
+
+// ******* Get SubArrays *******
+// input: [1, 2, 3]
+// output: [[1], [1, 2], [2], [1, 2, 3], [2, 3], [3]]
+
+export function getSubArrays(arr: number[]) {
+    const result = []
+    let inProgress = [] as number[][]
+
+    for (const next of arr) {
+        const proceedWith = []
+
+        for (const subArray of inProgress) {
+            result.push(subArray) // we are done with this subarray
+
+            proceedWith.push([...subArray, next]) // we should continue working with copy
+        }
+
+        proceedWith.push([next]) // to avoid empty subarrays appear in the result
+        inProgress = proceedWith
+    }
+
+    result.push(...inProgress)
+
+    return result
 }

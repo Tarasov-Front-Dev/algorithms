@@ -8,6 +8,7 @@ import {
     findCircularRef,
     findMax,
     generateParenthesis,
+    getSubArrays,
     islandPerimeter,
     levelOrder,
     longestPalindrome,
@@ -25,15 +26,9 @@ import {
 describe('subarraySum', () => {
     describe('should throw an error', () => {
         it('should throw an error if the first argument is not an array', () => {
-            expect(() => subarraySum(null as unknown as number[], 5)).toThrowError(
-                'Provide a number array as an argument'
-            )
-            expect(() => subarraySum(undefined as unknown as number[], 5)).toThrowError(
-                'Provide a number array as an argument'
-            )
-            expect(() => subarraySum('string' as unknown as number[], 5)).toThrowError(
-                'Provide a number array as an argument'
-            )
+            expect(() => subarraySum(null as unknown as number[], 5)).toThrowError('Provide a number array as an argument')
+            expect(() => subarraySum(undefined as unknown as number[], 5)).toThrowError('Provide a number array as an argument')
+            expect(() => subarraySum('string' as unknown as number[], 5)).toThrowError('Provide a number array as an argument')
         })
     })
 
@@ -70,15 +65,9 @@ describe('subarraySum', () => {
 describe('slidingWindow', () => {
     describe('should throw an error', () => {
         it('should throw an error if the argument is not a string', () => {
-            expect(() => slidingWindow(null as unknown as string)).toThrowError(
-                'Provide a string as an argument'
-            )
-            expect(() => slidingWindow(undefined as unknown as string)).toThrowError(
-                'Provide a string as an argument'
-            )
-            expect(() => slidingWindow(123 as unknown as string)).toThrowError(
-                'Provide a string as an argument'
-            )
+            expect(() => slidingWindow(null as unknown as string)).toThrowError('Provide a string as an argument')
+            expect(() => slidingWindow(undefined as unknown as string)).toThrowError('Provide a string as an argument')
+            expect(() => slidingWindow(123 as unknown as string)).toThrowError('Provide a string as an argument')
         })
     })
 
@@ -105,15 +94,9 @@ describe('slidingWindow', () => {
 describe('dp', () => {
     describe('should throw an error', () => {
         it('should throw an error if the first argument is not an array', () => {
-            expect(() => dp(null as unknown as number[])).toThrowError(
-                'Provide a number array as an argument'
-            )
-            expect(() => dp(undefined as unknown as number[])).toThrowError(
-                'Provide a number array as an argument'
-            )
-            expect(() => dp('string' as unknown as number[])).toThrowError(
-                'Provide a number array as an argument'
-            )
+            expect(() => dp(null as unknown as number[])).toThrowError('Provide a number array as an argument')
+            expect(() => dp(undefined as unknown as number[])).toThrowError('Provide a number array as an argument')
+            expect(() => dp('string' as unknown as number[])).toThrowError('Provide a number array as an argument')
         })
     })
 
@@ -141,15 +124,9 @@ describe('dp', () => {
 describe('bfs', () => {
     describe('should throw an error', () => {
         it('should throw an error if the arguments are not numbers', () => {
-            expect(() => bfs(null as unknown as number, 5)).toThrowError(
-                'Provide numbers as arguments'
-            )
-            expect(() => bfs(undefined as unknown as number, 5)).toThrowError(
-                'Provide numbers as arguments'
-            )
-            expect(() => bfs('string' as unknown as number, 5)).toThrowError(
-                'Provide numbers as arguments'
-            )
+            expect(() => bfs(null as unknown as number, 5)).toThrowError('Provide numbers as arguments')
+            expect(() => bfs(undefined as unknown as number, 5)).toThrowError('Provide numbers as arguments')
+            expect(() => bfs('string' as unknown as number, 5)).toThrowError('Provide numbers as arguments')
         })
     })
 
@@ -212,7 +189,10 @@ describe('findCircularRef', () => {
                     val: 2,
                     next: {
                         val: 3,
-                        next: { val: 4, next: { val: 5, next: { val: 6, next: null } } },
+                        next: {
+                            val: 4,
+                            next: { val: 5, next: { val: 6, next: null } },
+                        },
                     },
                 },
             } as List
@@ -256,20 +236,8 @@ describe('searchMatrix', () => {
 
 describe('reorderLogFiles', () => {
     it('should sort the logs correctly', () => {
-        const logs = [
-            'dig1 8 1 5 1',
-            'let1 art can',
-            'dig2 3 6',
-            'let2 own kit dig',
-            'let3 art zero',
-        ]
-        const expectedResult = [
-            'let1 art can',
-            'let3 art zero',
-            'let2 own kit dig',
-            'dig1 8 1 5 1',
-            'dig2 3 6',
-        ]
+        const logs = ['dig1 8 1 5 1', 'let1 art can', 'dig2 3 6', 'let2 own kit dig', 'let3 art zero']
+        const expectedResult = ['let1 art can', 'let3 art zero', 'let2 own kit dig', 'dig1 8 1 5 1', 'dig2 3 6']
         expect(reorderLogFiles(logs)).toEqual(expectedResult)
     })
 })
@@ -354,7 +322,11 @@ describe('dfs', () => {
     it('should return the max path sum of a binary tree', () => {
         const testTree = {
             val: 1,
-            left: { val: 4, left: { val: 2 }, right: { val: 3, left: { val: 2 } } },
+            left: {
+                val: 4,
+                left: { val: 2 },
+                right: { val: 3, left: { val: 2 } },
+            },
             right: { val: 7, left: { val: 5 }, right: { val: 4 } },
         }
         expect(maxSumPath(testTree)).toBe(13)
@@ -363,7 +335,11 @@ describe('dfs', () => {
     it('should return the max path sum of a binary tree with negative values', () => {
         const testTree = {
             val: 1,
-            left: { val: 4, left: { val: 2 }, right: { val: 3, left: { val: 2 } } },
+            left: {
+                val: 4,
+                left: { val: 2 },
+                right: { val: 3, left: { val: 2 } },
+            },
             right: { val: -7, left: { val: 5 }, right: { val: 4 } },
         }
         expect(maxSumPath(testTree)).toBe(10)
@@ -372,18 +348,8 @@ describe('dfs', () => {
 
 describe('140. Word Break II', () => {
     it('should return proper strings from the dict', () => {
-        expect(
-            wordBreak('catsanddog', ['cat', 'cats', 'and', 'sand', 'dog'])
-        ).toStrictEqual(['cats and dog', 'cat sand dog'])
-        expect(
-            wordBreak('pineapplepenapple', [
-                'apple',
-                'pen',
-                'applepen',
-                'pine',
-                'pineapple',
-            ])
-        ).toStrictEqual([
+        expect(wordBreak('catsanddog', ['cat', 'cats', 'and', 'sand', 'dog'])).toStrictEqual(['cats and dog', 'cat sand dog'])
+        expect(wordBreak('pineapplepenapple', ['apple', 'pen', 'applepen', 'pine', 'pineapple'])).toStrictEqual([
             'pine apple pen apple',
             'pineapple pen apple',
             'pine applepen apple',
@@ -507,13 +473,7 @@ describe('longestPalindrome', () => {
 
 describe('generateParenthesis', () => {
     it('should return the parenthesis sequence', () => {
-        expect(generateParenthesis(3)).toStrictEqual([
-            '((()))',
-            '(()())',
-            '(())()',
-            '()(())',
-            '()()()',
-        ])
+        expect(generateParenthesis(3)).toStrictEqual(['((()))', '(()())', '(())()', '()(())', '()()()'])
         expect(generateParenthesis(1)).toStrictEqual(['()'])
     })
 })
@@ -534,5 +494,11 @@ describe('islandPerimeter', () => {
     })
     it('should return the perimeter of an island', () => {
         expect(islandPerimeter([[1, 0]])).toBe(4)
+    })
+})
+
+describe('getSubArrays', () => {
+    it('should return an array of subarrays', () => {
+        expect(getSubArrays([1, 2, 3])).toStrictEqual([[1], [1, 2], [2], [1, 2, 3], [2, 3], [3]])
     })
 })

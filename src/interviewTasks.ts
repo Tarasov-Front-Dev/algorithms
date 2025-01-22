@@ -12,7 +12,12 @@ interface Job {
     execute: () => Promise<any>
 }
 
-type JobLine = { qcPassed: number; qcFailed: number; jobIds: string[]; timeSpent: number }
+type JobLine = {
+    qcPassed: number
+    qcFailed: number
+    jobIds: string[]
+    timeSpent: number
+}
 
 export class AssemblyLineScheduler {
     n: number

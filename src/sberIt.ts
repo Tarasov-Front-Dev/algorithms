@@ -10,29 +10,40 @@ Description
 Task
 */
 
-export function flattenList(arr: any[]) {
-    const flattened = []
-    const stack: any[] = []
+export const flattenList = (arr: any[]): any[] => {
+    const flatten = [] as any[]
+    const stack = [] as any[]
+
     for (let i = arr.length - 1; i >= 0; i--) {
         while (stack.length) {
-            if (Array.isArray(stack.at(-1))) stack.push(...stack.pop())
-            else flattened.push(stack.pop())
+            if (Array.isArray(stack.at(-1))) {
+                stack.push(...stack.pop())
+            } else {
+                flatten.push(stack.pop())
+            }
         }
-        if (Array.isArray(arr[i])) stack.push(arr[i])
-        else flattened.push(arr[i])
+
+        if (Array.isArray(arr[i])) {
+            stack.push(...arr[i])
+        } else {
+            flatten.push(arr[i])
+        }
     }
-    return flattened.reverse()
+
+    return flatten.reverse()
 }
 
 /********CustomFlat (recursive)********/
 
 export const recursiveFlat = (arr: any[]) => {
-    const flattened: any[] = []
-    arr.forEach(el => {
-        if (Array.isArray(el)) flattened.push(...recursiveFlat(el))
-        else flattened.push(el)
-    })
-    return flattened
+    const answer: any[] = []
+
+    for (const val of arr) {
+        if (Array.isArray(val)) answer.push(...recursiveFlat(val))
+        else answer.push(val)
+    }
+
+    return answer
 }
 
 /*********Console.log Sequence**********/
@@ -58,6 +69,7 @@ export const recursiveFlat = (arr: any[]) => {
 // // @ts-expect-error should throw an error coz 'c' identifier initialized later
 // console.log(c)
 
+// // eslint-disable-next-line no-var
 // var c = 3
 
 /**********Console.log Sequence***********/
@@ -85,15 +97,17 @@ export const recursiveFlat = (arr: any[]) => {
 // input [0, 1, 2, 3, 4, 5]
 // output [1, 2, 4, 6, 8, 4]
 
-export const returnSumNestElement = (arr: number[]) => {
-    if (arr.length === 1) return arr
+export const returnSumNestElement = (nums: number[]) => {
     let prev = 0
-    for (let i = 0; i < arr.length; i++) {
-        const newVal = prev + (arr[i + 1] ?? 0)
-        prev = arr[i]
-        arr[i] = newVal
+
+    for (let i = 0; i < nums.length; i++) {
+        const sum = prev + (nums[i + 1] ?? 0)
+        prev = nums[i]
+
+        nums[i] = sum
     }
-    return arr
+
+    return nums
 }
 
 /*********Get Price************/
@@ -106,14 +120,12 @@ const priceList = {
     '41-Infinity': 10,
 }
 
-type Key = keyof typeof priceList
+export const getPriceList = (cost: number) => {
+    const part1 = Math.ceil(cost / 10) - 1
+    const key1 = `${part1 || ''}1-${part1 + 1}0` as keyof typeof priceList
+    const key2 = Object.keys(priceList).at(-1) as keyof typeof priceList
 
-export const getPriceList = (cost: number | string) => {
-    if (!Number(cost)) return false
-    const partial = Math.ceil(Number(cost) / 10) - 1
-    const key1 = `${partial || ''}1-${partial + 1}0` as Key
-    const key2 = Object.keys(priceList).at(-1) as Key
-    return priceList[key1] ?? priceList[key2]
+    return priceList[key1] ?? priceList[key2 ?? '0']
 }
 
 /**********CustomReducer***********/
@@ -128,18 +140,17 @@ reduce([75, 25, 15, 35], sum, 0); // => 150
 reduce(["a", "b", "c", "d"], sum, ""); // => abcd
 */
 
-export function reduce(
-    arr: any[],
-    cb: (acc: any, item: any, i: number, arr: any) => any,
-    init?: any
-) {
+export const reduce = <T, U>(arr: T[], cb: (prev: T | NonNullable<U>, item: T, idx: number, arr: T[]) => T | NonNullable<U>, init?: U) => {
     let i = 0
-    let acc = init ?? arr[i++]
+    let prev = init ?? arr[i++]
+
     while (i < arr.length) {
-        acc = cb(acc, arr[i], i, arr)
+        prev = cb(prev, arr[i], i, arr)
+
         i++
     }
-    return acc
+
+    return prev
 }
 
 /**********Async Timeout***********/
@@ -150,22 +161,20 @@ Description
 */
 
 // const timeouts = [
-//   { name: 'first', timeout: 2000 },
-//   { name: 'second', timeout: 1500 },
-//   { name: 'third', timeout: 1000 },
-//   { name: 'fourth' },
+//     { name: 'first', timeout: 2000 },
+//     { name: 'second', timeout: 1500 },
+//     { name: 'third', timeout: 1000 },
+//     { name: 'fourth' },
 // ]
 // type Timeouts = typeof timeouts
 
-// function run(timeouts: Timeouts, i = 0) {
-//   if (!timeouts.length) return
-//   if (!Array.isArray(timeouts)) return
+// export const run = (timeouts: Timeouts, i = 0) => {
+//     if (i >= timeouts.length) return
 
-//   const { name, timeout = 0 } = timeouts[i]
-//   setTimeout(() => {
-//     console.log(name)
-//     if (i < timeouts.length - 1) return run(timeouts, i + 1)
-//   }, timeout)
+//     setTimeout(() => {
+//         console.log(timeouts[i].name)
+//         run(timeouts, i + 1)
+//     }, timeouts[i].timeout ?? 0);
 // }
 
 /**********OddOrEven***********/
@@ -173,15 +182,34 @@ Description
 // Реализовать функцию, которая возвращает либо четное, либо нечетное число из переданного в нее массива.
 // Функция принимает на вход массив из [четных чисел с одним нечетным] или массив [нечетных чисел с одним четным]
 
-// const evenOdd = (arr) => {
-//   const even = arr.filter(num => num % 2 === 0)
-//   const odd = arr.filter(num => num % 2 !== 0)
-//   return even.length === 1 ? even[0] : odd[0]
+// const evenOdd = (nums: number[]) => {
+//     if (nums.length === 1) return nums[0]
+
+//     let even = 0, odd = 0
+//     let evenNum = 0, oddNum = 0
+
+//     for (const num of nums) {
+//         const isEven = num % 2 === 0
+
+//         if (isEven) {
+//             even++
+//             evenNum = num
+//         } else {
+//             odd++
+//             oddNum = num
+//         }
+//     }
+
+//     if (even > 1 && odd === 1) return oddNum
+//     if (odd > 1 && even === 1) return evenNum
 // }
 
 // console.log(evenOdd([1, 3, 5, 7, 8, 9]) === 8)
-// console.log(evenOdd([2, 4, 6, 8, 9]) === 9)
+// console.log(evenOdd([2, 3, 4, 6, 8]) === 3)
 // console.log(evenOdd([1]) === 1)
+// console.log(evenOdd([1, 3]) === undefined)
+// console.log(evenOdd([1, 3, 4, 6]) === undefined)
+// console.log(evenOdd([]) === undefined)
 
 /********Custom Promise.all()******/
 
@@ -191,34 +219,43 @@ export const promises = [
     Promise.resolve('a'),
     Promise.resolve('b'),
     new Promise(resolve => {
-        // console.log(Date.now())
         setTimeout(() => resolve('c'), 5_000)
     }),
     new Promise(resolve => {
-        // console.log(Date.now())
         setTimeout(() => resolve('d'), 2_000)
     }),
 ]
 
-export const promisesWithError = [
-    '0',
-    1,
-    Promise.resolve('c'),
-    // new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
-]
+export const promisesWithError = ['0', 1, Promise.resolve('c'), new Promise((_, reject) => setTimeout(() => reject('error'), 200))]
 
-export const all = async (promises: any[]) => {
-    const answer = Array.from({ length: promises.length }, () => null)
-    for (let i = 0; i < promises.length; i++) {
-        try {
-            const response = await Promise.resolve(promises[i])
-            answer[i] = response
-        } catch (error) {
-            throw error
-        }
-    }
-    return answer
-}
+// const all = async (promises: (Promise<unknown> | string | number)[]) => {
+//     const answer = new Array(promises.length).fill(null)
+
+//     for (let i = 0; i < promises.length; i++) {
+//         const data = await Promise.resolve(promises[i])
+//         answer[i] = data
+//     }
+
+//     return answer
+// }
+
+// export const all = async(promises: Promise<unknown>[] | any[]) => {
+//     const n = promises.length
+//     const answer = new Array(n).fill(null)
+//     let resolvedPromises = promises.length
+
+//     return new Promise((res, rej) => {
+//         for (let i = 0; i < promises.length; i++) {
+//             Promise.resolve(promises[i])
+//                 .then(data => {
+//                     answer[i] = data
+//                     resolvedPromises--
+
+//                     if (!resolvedPromises) return res(answer)
+//                 }).catch(e => rej(e))
+//         }
+//     })
+// }
 
 // all(promises).then(console.log).catch(console.log) // [0, '1', 'a', 'b', 'c', 'd']
 // all(promisesWithError).then(console.log).catch(console.log) // 'error'
@@ -236,7 +273,7 @@ export const all = async (promises: any[]) => {
 
 export function getIntervals(arr: number[]) {
     const answer = [] as (number | string)[]
-    const copied = arr.toSorted((a, b) => a - b)
+    const copied = arr.slice().sort((a, b) => a - b)
     for (let i = 0; i < copied.length; i++) {
         const start = copied[i]
         while (i < copied.length && copied[i] + 1 === copied[i + 1]) i++
@@ -251,25 +288,6 @@ export function getIntervals(arr: number[]) {
 
 /**********Linked List***********/
 
-const data = {
-    value: 1,
-    next: {
-        value: 2,
-        next: {
-            value: 3,
-            next: {
-                value: 4,
-                next: {
-                    value: 5,
-                    next: {
-                        value: 6,
-                    },
-                },
-            },
-        },
-    },
-}
-
 export function getValues(list: any) {
     const answer = [] as number[]
     while (list) {
@@ -281,12 +299,12 @@ export function getValues(list: any) {
 
 /**********Custom Carry***********/
 
-// function curry(fn: (...args: any[]) => any) {
-//   return function curried(this: any, ...args: any[]) {
-//     if (args.length === fn.length) return fn.apply(this, args)
-//     else return (...newArgs: any[]) => curried.apply(this, args.concat(newArgs))
-//   }
-// }
+// const curry = (cb: (...args: any[]) => any) =>
+//     function curried(...args: any[]) {
+//         if (args.length === cb.length) return cb(...args)
+
+//         return (...newArgs: any[]) => curried.call(this, ...args, ...newArgs)
+//     }
 
 // const sum = (a: number, b: number, c: number, d: number, e: number) => a + b + c + d + e
 // const curriedSum = curry(sum)
@@ -325,10 +343,7 @@ export function decodeStringFromArr(arr: EncodeString[]) {
             arr
                 .filter(el => !el.expired)
                 .toSorted((a, b) => a.order - b.order)
-                .reduce(
-                    (acc, el) => acc.concat(el.value.split('').reverse()),
-                    [] as string[]
-                )
+                .reduce((acc, el) => acc.concat(el.value.split('').reverse()), [] as string[])
         ),
     ].join('')
 }
@@ -337,13 +352,13 @@ export function decodeStringFromArr(arr: EncodeString[]) {
 
 /*
   У нас есть набор билетов вида:
-  // const tickets = [
-  //   {from: 'London',to: 'Moscow'},
-  //   {from: 'NY',to: 'London'},
-  //   {from: 'Portugal',to: 'NY'},
-  //   {from: 'Moscow',to: 'SPb'},
-  //   {from: 'SPb',to: 'Kairo'}
-  // ];
+  const tickets = [
+    {from: 'London',to: 'Moscow'},
+    {from: 'NY',to: 'London'},
+    {from: 'Portugal',to: 'NY'},
+    {from: 'Moscow',to: 'SPb'},
+    {from: 'SPb',to: 'Kairo'}
+  ];
 
   Из этих билетов можно построить единственный, неразрывный маршрут.
   Петель и повторов в маршруте нет.
@@ -361,4 +376,81 @@ type Route = {
 
 export function getRoute(routes: Route[]) {
     return routes.toSorted((a, b) => (a.to.localeCompare(b.from) ? 0 : -1))
+}
+
+/**********UnZip a String***********/
+
+export function lcr(s: string) {
+    s = decodeSingleChars(s)
+    s = decodeChunks(s)
+
+    return s
+}
+
+function decodeSingleChars(s: string) {
+    const regexp = /(\d+)([A-Z])/g
+    const replacer = (_: string, mult: string, char: string) => char.repeat(Number(mult))
+
+    s = s.replace(regexp, replacer)
+
+    return s
+}
+
+function decodeChunks(s: string) {
+    const regexp = /(\d+)\(([A-Z]+)\)/g
+    const replacer = (_: string, mult: string, chunk: string) => chunk.repeat(Number(mult))
+
+    while (regexp.test(s)) {
+        s = s.replace(regexp, replacer)
+    }
+
+    return s
+}
+
+// result = '3AB2(C3(KA)Z)2B3(KA)'
+
+/**********Sum sizes of the files***********/
+
+export const calcTotalSize = (root: object, path?: string) => {
+    const rootDir = findRootDir(root, path)
+    return rootDir && calcSizeOfTree(rootDir)
+}
+
+function findRootDir(root: object, path = '/') {
+    const chunks = path.split('/').filter(Boolean)
+    let target: object | number | undefined = root
+
+    for (const chunk of chunks) {
+        target = dfs(root, chunk)
+    }
+
+    return target
+
+    function dfs(root: object, chunk: string): object {
+        if (chunk in root) return { val: root[chunk as keyof typeof root] } // when returns a number wrap it with object
+
+        for (const neigh of Object.values(root)) {
+            if (typeof neigh === 'object') {
+                const found = dfs(neigh, chunk)
+
+                if (found) return found
+            }
+        }
+
+        return {}
+    }
+}
+
+function calcSizeOfTree(root: object) {
+    let totalSize = 0
+
+    for (const val of Object.values(root)) {
+        if (typeof val === 'object') {
+            totalSize += calcSizeOfTree(val)
+        } else {
+            totalSize += val
+        }
+    }
+
+    return totalSize
 }
