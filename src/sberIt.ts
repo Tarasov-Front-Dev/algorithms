@@ -374,9 +374,7 @@ type Route = {
     to: string
 }
 
-export function getRoute(routes: Route[]) {
-    return routes.toSorted((a, b) => (a.to.localeCompare(b.from) ? 0 : -1))
-}
+export const getRoute = (routes: Route[]) => routes.toSorted((a, b) => (a.to === b.from ? -1 : 0))
 
 /**********UnZip a String***********/
 
