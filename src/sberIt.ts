@@ -468,3 +468,28 @@ function calcFolderSize(obj: object) {
 
     return sum
 }
+
+// ******** Insert a str into sorted string array *******
+// strs = ['a','b','d'], s = 'c', res = ['a','b','c','d']
+
+const findIndex = (strs: string[], s: string) => {
+    let l = 0,
+        r = strs.length - 1
+
+    while (l <= r) {
+        const mid = Math.floor(l + (r - l) / 2)
+
+        if (strs[mid] < s) {
+            l++
+        } else {
+            r--
+        }
+    }
+
+    return l
+}
+
+export const insertSorted = (strs: string[], s: string) => {
+    const index = findIndex(strs, s)
+    return strs.toSpliced(index, 0, s)
+}

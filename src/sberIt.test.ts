@@ -8,6 +8,7 @@ import {
     getPriceList,
     getRoute,
     getValues,
+    insertSorted,
     lcr,
     recursiveFlat,
     reduce,
@@ -226,4 +227,14 @@ describe('calcTotalSized', () => {
             expect(calcTotalSize(rootDir, 'dir/')).toEqual(0) // no such directory / file
             expect(calcTotalSize(rootDir, 'item1')).toEqual(200) // file
         }
+})
+
+describe('insertSorted', () => {
+    it('should return an array with a string inserted in order', () => {
+        expect(insertSorted(['a', 'b', 'd'], 'c')).toStrictEqual(['a', 'b', 'c', 'd'])
+        expect(insertSorted(['a', 'b', 'd'], 'a')).toStrictEqual(['a', 'a', 'b', 'd'])
+        expect(insertSorted(['a', 'b', 'd'], 'd')).toStrictEqual(['a', 'b', 'd', 'd'])
+        expect(insertSorted(['a', 'b', 'd'], 'z')).toStrictEqual(['a', 'b', 'd', 'z'])
+        expect(insertSorted(['b', 'd'], 'a')).toStrictEqual(['a', 'b', 'd'])
+    })
 })
