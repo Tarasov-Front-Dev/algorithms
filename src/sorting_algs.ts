@@ -47,14 +47,27 @@ export const arr100WithRepeats = [
 
 // /***********BubbleSort***********/
 
-export const bubbleSort = (arr: number[]) => {
-    for (let i = 0; i < arr.length; i++) {
-        for (let j = 1; j < arr.length - i; j++) {
-            if (arr[j - 1] > arr[j]) [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
+// export const bubbleSort = (arr: number[]) => {
+//     for (let i = 0; i < arr.length; i++) {
+//         for (let j = 1; j < arr.length - i; j++) {
+//             if (arr[j - 1] > arr[j]) [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
+//         }
+//     }
+
+//     return arr
+// }
+
+export const bubbleSort = (nums: number[]) => {
+    const n = nums.length
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n - i; j++) {
+            if (nums[j] > nums[j + 1]) {
+                ;[nums[j], nums[j + 1]] = [nums[j + 1], nums[j]]
+            }
         }
     }
 
-    return arr
+    return nums
 }
 
 // const bubbleSorter = new Sort(bubbleSort)
