@@ -76,9 +76,9 @@ describe('reduce', () => {
     })
 
     it('should reduce array without initial value correctly', () => {
-        expect(reduce<number, number>([75, 25, 15, 35], (acc, item) => acc + item)).toEqual(150)
+        expect(reduce([75, 25, 15, 35], (acc, item) => acc + item)).toEqual(150)
         expect(reduce(['a', 'b', 'c', 'd'], (acc, item) => acc + item)).toEqual('abcd')
-        expect(reduce<number[], number[]>([[1, 2], [3], [4, 5, 6]], (acc, item) => [...acc, ...item])).toStrictEqual([1, 2, 3, 4, 5, 6])
+        expect(reduce([[1, 2], [3], [4, 5, 6]], (acc, item) => [...acc, ...item])).toStrictEqual([1, 2, 3, 4, 5, 6])
     })
 })
 
@@ -223,7 +223,7 @@ describe('calcTotalSized', () => {
             expect(calcTotalSize(rootDir, '/head')).toEqual(5000)
             expect(calcTotalSize(rootDir, '/body/header/nav')).toEqual(500)
             expect(calcTotalSize(rootDir, 'nav/')).toEqual(500)
-            expect(calcTotalSize(rootDir, 'dir/')).toEqual(0) // no such directory
-            expect(calcTotalSize(rootDir, 'item1')).toEqual(200) // no such directory
+            expect(calcTotalSize(rootDir, 'dir/')).toEqual(0) // no such directory / file
+            expect(calcTotalSize(rootDir, 'item1')).toEqual(200) // file
         }
 })

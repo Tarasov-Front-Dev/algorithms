@@ -51,9 +51,9 @@ export const recursiveFlat = (arr: any[]) => {
 // setTimeout(() => console.log(a, b, c), 0)
 
 // const promise = new Promise(resolve => {
-//   // @ts-expect-error should throw an error because 'a' indentifier isn't initialized yet
+//   // @ts-console.log-error should throw an error because 'a' indentifier isn't initialized yet
 //   a++
-//   // @ts-expect-error should throw an error coz no argument provided
+//   // @ts-console.log-error should throw an error coz no argument provided
 //   resolve()
 // })
 
@@ -66,7 +66,7 @@ export const recursiveFlat = (arr: any[]) => {
 
 // let b = 2
 
-// // @ts-expect-error should throw an error coz 'c' identifier initialized later
+// // @ts-console.log-error should throw an error coz 'c' identifier initialized later
 // console.log(c)
 
 // // eslint-disable-next-line no-var
@@ -140,17 +140,15 @@ reduce([75, 25, 15, 35], sum, 0); // => 150
 reduce(["a", "b", "c", "d"], sum, ""); // => abcd
 */
 
-export const reduce = <T, U>(arr: T[], cb: (prev: T | NonNullable<U>, item: T, idx: number, arr: T[]) => T | NonNullable<U>, init?: U) => {
+export const reduce = (arr: any, cb: any, init?: any) => {
     let i = 0
-    let prev = init ?? arr[i++]
+    let res = init ?? arr[i++]
 
     while (i < arr.length) {
-        prev = cb(prev, arr[i], i, arr)
-
-        i++
+        res = cb(res, arr[i++], i, arr)
     }
 
-    return prev
+    return res
 }
 
 /**********Async Timeout***********/
@@ -160,22 +158,17 @@ Description
 Дописать функцию в которой элементы массива будут последовательно выводиться в консоль спустя промежуток времени указанный в атрибуте timeout
 */
 
-// const timeouts = [
-//     { name: 'first', timeout: 2000 },
-//     { name: 'second', timeout: 1500 },
-//     { name: 'third', timeout: 1000 },
-//     { name: 'fourth' },
-// ]
-// type Timeouts = typeof timeouts
+const timeouts = [{ name: 'first', timeout: 2000 }, { name: 'second', timeout: 1500 }, { name: 'third', timeout: 1000 }, { name: 'fourth' }]
+type Timeouts = typeof timeouts
 
-// export const run = (timeouts: Timeouts, i = 0) => {
-//     if (i >= timeouts.length) return
+export const run = (timeouts: Timeouts, i = 0) => {
+    if (i >= timeouts.length) return
 
-//     setTimeout(() => {
-//         console.log(timeouts[i].name)
-//         run(timeouts, i + 1)
-//     }, timeouts[i].timeout ?? 0);
-// }
+    setTimeout(() => {
+        console.log(timeouts[i].name)
+        run(timeouts, i + 1)
+    }, timeouts[i].timeout ?? 0)
+}
 
 /**********OddOrEven***********/
 
@@ -213,20 +206,25 @@ Description
 
 /********Custom Promise.all()******/
 
-export const promises = [
-    0,
-    '1',
-    Promise.resolve('a'),
-    Promise.resolve('b'),
-    new Promise(resolve => {
-        setTimeout(() => resolve('c'), 5_000)
-    }),
-    new Promise(resolve => {
-        setTimeout(() => resolve('d'), 2_000)
-    }),
-]
+// export const promises = [
+//     0,
+//     '1',
+//     Promise.resolve('a'),
+//     Promise.resolve('b'),
+//     new Promise(resolve => {
+//         setTimeout(() => resolve('c'), 5_000)
+//     }),
+//     new Promise(resolve => {
+//         setTimeout(() => resolve('d'), 2_000)
+//     }),
+// ]
 
-export const promisesWithError = ['0', 1, Promise.resolve('c'), new Promise((_, reject) => setTimeout(() => reject('error'), 200))]
+// export const promisesWithError = [
+//     '0',
+//     1,
+//     Promise.resolve('c'),
+//     new Promise((_, reject) => setTimeout(() => reject('error'), 200)),
+// ]
 
 // const all = async (promises: (Promise<unknown> | string | number)[]) => {
 //     const answer = new Array(promises.length).fill(null)
@@ -377,6 +375,7 @@ type Route = {
 export const getRoute = (routes: Route[]) => routes.toSorted((a, b) => (a.to === b.from ? -1 : 0))
 
 /**********UnZip a String***********/
+// 3AB2(C3(KA)Z)2B3(KA) === AAABCKAKAKAZCKAKAKAZBBKAKAKA
 
 export function lcr(s: string) {
     s = decodeSingleChars(s)
@@ -405,50 +404,67 @@ function decodeChunks(s: string) {
     return s
 }
 
-// result = '3AB2(C3(KA)Z)2B3(KA)'
-
 /**********Sum sizes of the files***********/
 
-export const calcTotalSize = (root: object, path?: string) => {
-    const rootDir = findRootDir(root, path)
-    return rootDir && calcSizeOfTree(rootDir)
+// const rootDir: { [key: string]: number | object } = {
+//     head: {
+//         'font.woff2': 3000,
+//         'style.css': 2000,
+//     },
+//     body: {
+//         header: {
+//             nav: {
+//                 item1: 200,
+//                 item2: 300,
+//             },
+//         },
+//     },
+//     footer: 500,
+// }
+
+export function calcTotalSize(obj: object, path?: string) {
+    const rootFolder = findRootFolder(obj, path)
+    const folderSize = calcFolderSize(rootFolder)
+
+    return folderSize
 }
 
-function findRootDir(root: object, path = '/') {
+function findRootFolder(obj: object, path = '/') {
     const chunks = path.split('/').filter(Boolean)
-    let target: object | number | undefined = root
+
+    let rootFolder = obj
 
     for (const chunk of chunks) {
-        target = dfs(root, chunk)
+        rootFolder = dfs(rootFolder, chunk as keyof typeof rootFolder)
     }
 
-    return target
+    return rootFolder
 
-    function dfs(root: object, chunk: string): object {
-        if (chunk in root) return { val: root[chunk as keyof typeof root] } // when returns a number wrap it with object
+    function dfs(root: object, chunk: keyof typeof root): object {
+        if (chunk in root) return root[chunk]
 
-        for (const neigh of Object.values(root)) {
-            if (typeof neigh === 'object') {
-                const found = dfs(neigh, chunk)
+        for (const val of Object.values(root)) {
+            if (typeof val === 'object') {
+                const found = dfs(val, chunk)
 
                 if (found) return found
             }
         }
 
-        return {}
+        return { root: undefined }
     }
 }
 
-function calcSizeOfTree(root: object) {
-    let totalSize = 0
+function calcFolderSize(obj: object) {
+    let sum = 0
 
-    for (const val of Object.values(root)) {
+    for (const val of Object.values(obj)) {
         if (typeof val === 'object') {
-            totalSize += calcSizeOfTree(val)
-        } else {
-            totalSize += val
+            sum += calcFolderSize(val)
+        } else if (typeof val === 'number') {
+            sum += val
         }
     }
 
-    return totalSize
+    return sum
 }
