@@ -47,27 +47,14 @@ export const arr100WithRepeats = [
 
 // /***********BubbleSort***********/
 
-// export const bubbleSort = (arr: number[]) => {
-//     for (let i = 0; i < arr.length; i++) {
-//         for (let j = 1; j < arr.length - i; j++) {
-//             if (arr[j - 1] > arr[j]) [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
-//         }
-//     }
-
-//     return arr
-// }
-
-export const bubbleSort = (nums: number[]) => {
-    const n = nums.length
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n - i; j++) {
-            if (nums[j] > nums[j + 1]) {
-                ;[nums[j], nums[j + 1]] = [nums[j + 1], nums[j]]
-            }
+export const bubbleSort = (arr: number[]) => {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 1; j < arr.length - i; j++) {
+            if (arr[j - 1] > arr[j]) [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
         }
     }
 
-    return nums
+    return arr
 }
 
 // const bubbleSorter = new Sort(bubbleSort)
@@ -98,7 +85,6 @@ export const selectedSort = (nums: number[]) => {
             }
         }
 
-        // eslint-disable-next-line no-extra-semi
         ;[nums[i], nums[min]] = [nums[min], nums[i]]
     }
 
@@ -193,17 +179,24 @@ export const mergeSortByIndex = (nums: number[]): number[] => {
     return merge(left, right)
 }
 
-export const merge = <T extends number[]>(left: T, right: T) => {
-    const sorted = [] as number[]
+function merge(left: number[], right: number[]) {
+    const totalLength = left.length + right.length
+    const sorted = new Array(totalLength).fill(null)
+
     let l = 0,
         r = 0
+    let i = 0
 
-    while (l < left.length || r < right.length) {
+    while (i < totalLength) {
+        let val = 0
+
         if (left[l] < (right[r] ?? Infinity)) {
-            sorted.push(left[l++])
+            val = left[l++]
         } else {
-            sorted.push(right[r++])
+            val = right[r++]
         }
+
+        sorted[i++] = val
     }
 
     return sorted
