@@ -8,6 +8,7 @@ import {
     findCircularRef,
     findMax,
     generateParenthesis,
+    getPermutations,
     getSubArrays,
     islandPerimeter,
     levelOrder,
@@ -500,5 +501,18 @@ describe('islandPerimeter', () => {
 describe('getSubArrays', () => {
     it('should return an array of subarrays', () => {
         expect(getSubArrays([1, 2, 3])).toStrictEqual([[1], [1, 2], [2], [1, 2, 3], [2, 3], [3]])
+    })
+})
+
+describe('getPermutations', () => {
+    it('should return an array of subarrays', () => {
+        expect(getPermutations([1, 2, 3])).toStrictEqual([
+            [1, 2, 3],
+            [1, 3, 2],
+            [2, 1, 3],
+            [2, 3, 1],
+            [3, 1, 2],
+            [3, 2, 1],
+        ])
     })
 })

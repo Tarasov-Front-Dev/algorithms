@@ -129,19 +129,23 @@ export const list = {
 list.next.next.next.next.next.next = list.next.next
 
 export function findCircularRef(list: List) {
-    let slow: List | null = list
-    let fast: List | null = list
-    while (fast && fast.next) {
-        slow = slow?.next!
-        fast = fast.next.next
+    let slow = list.next,
+        fast = list.next?.next
+
+    while (slow && fast) {
         if (slow === fast) break
+
+        slow = slow.next
+        fast = fast.next?.next
     }
-    if (!fast || !fast.next) return null
+
     slow = list
+
     while (slow !== fast) {
-        slow = slow?.next!
-        fast = fast?.next!
+        slow = slow?.next ?? null
+        fast = fast?.next ?? null
     }
+
     return slow
 }
 
@@ -426,7 +430,7 @@ async function placeInputToShowPokemon() {
         return total.results
     }
 }
-placeInputToShowPokemon()
+placeInputToShowPokemon
 
 // ****** 140. Word Break II ******
 
@@ -486,7 +490,7 @@ export function topKFrequent(nums: number[], k: number) {
         map.set(num, (map.get(num) ?? 0) + 1)
     }
     for (const [num, qty] of map.entries()) {
-        const idx = answer.findIndex(([_, _qty]) => (_qty ?? -Infinity) < qty)
+        const idx = answer.findIndex(([, _qty]) => (_qty ?? -Infinity) < qty)
         if (~idx) {
             for (let i = k - 1; i > idx; i--) {
                 answer[i] = answer[i - 1]
@@ -508,6 +512,7 @@ const graph = {
     F: { G: 1 },
     G: {},
 }
+graph
 
 type Graph = { [x: string]: { [y: string]: number } }
 
@@ -807,3 +812,38 @@ export function getSubArrays(arr: number[]) {
 
     return result
 }
+
+// ******* Get Permutations *******
+/**
+ * Recursively generates all possible permutations of an array.
+ * @param {Array<T>} arr - The input array.
+ * @returns {Array<Array<T>>} An array containing all permutations.
+ * @template T
+ */
+export function getPermutations(array: number[], temp: number[] = []): number[][] {
+    if (!array.length) return [temp]
+
+    const result = []
+
+    for (let i = 0; i < array.length; i++) {
+        const x = array[i]
+
+        result.push(...getPermutations(array.toSpliced(i, 1), [...temp, x]))
+    }
+
+    return result
+}
+
+// console.log(
+//     getPermutations(
+//         [1, 2, 3, 4]
+//     ),
+// )
+// [
+//   [ 1, 2, 3 ],
+//   [ 1, 3, 2 ],
+//   [ 2, 1, 3 ],
+//   [ 2, 3, 1 ],
+//   [ 3, 1, 2 ],
+//   [ 3, 2, 1 ]
+// ]

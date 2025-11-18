@@ -378,24 +378,21 @@ export const getRoute = (routes: Route[]) => routes.toSorted((a, b) => (a.to ===
 // 3AB2(C3(KA)Z)2B3(KA) === AAABCKAKAKAZCKAKAKAZBBKAKAKA
 
 export function lcr(s: string) {
-    s = decodeSingleChars(s)
-    s = decodeChunks(s)
+    s = decodeSingleChar(s)
 
-    return s
+    return decodeChunk(s)
 }
 
-function decodeSingleChars(s: string) {
-    const regexp = /(\d+)([A-Z])/g
-    const replacer = (_: string, mult: string, char: string) => char.repeat(Number(mult))
+const replacer = (_: string, mult: number, char: string) => char.repeat(+mult)
 
-    s = s.replace(regexp, replacer)
+function decodeSingleChar(s: string) {
+    const regexp = /(\d+)([a-z])/gi
 
-    return s
+    return s.replace(regexp, replacer)
 }
 
-function decodeChunks(s: string) {
-    const regexp = /(\d+)\(([A-Z]+)\)/g
-    const replacer = (_: string, mult: string, chunk: string) => chunk.repeat(Number(mult))
+function decodeChunk(s: string) {
+    const regexp = /(\d+)\(([a-z]+)\)/gi
 
     while (regexp.test(s)) {
         s = s.replace(regexp, replacer)
@@ -423,45 +420,35 @@ function decodeChunks(s: string) {
 // }
 
 export function calcTotalSize(obj: object, path?: string) {
-    const rootFolder = findRootFolder(obj, path)
-    const folderSize = calcFolderSize(rootFolder)
+    const root = findRoot(obj, path)
 
-    return folderSize
+    return calcTreeSize(root)
 }
 
-function findRootFolder(obj: object, path = '/') {
-    const chunks = path.split('/').filter(Boolean)
+function findRoot(obj: object, path = '/') {
+    const chunks = path.split('/').filter(Boolean) as (keyof typeof obj)[]
 
-    let rootFolder = obj
+    let root: object | undefined = obj
 
     for (const chunk of chunks) {
-        rootFolder = dfs(rootFolder, chunk as keyof typeof rootFolder)
-    }
-
-    return rootFolder
-
-    function dfs(root: object, chunk: keyof typeof root): object {
-        if (chunk in root) return root[chunk]
-
-        for (const val of Object.values(root)) {
-            if (typeof val === 'object') {
-                const found = dfs(val, chunk)
-
-                if (found) return found
-            }
+        if (chunk in root) {
+            root = root[chunk]
+        } else {
+            root = undefined
+            break
         }
-
-        return { root: undefined }
     }
+
+    return { root }
 }
 
-function calcFolderSize(obj: object) {
+function calcTreeSize(obj: object) {
     let sum = 0
 
     for (const val of Object.values(obj)) {
         if (typeof val === 'object') {
-            sum += calcFolderSize(val)
-        } else if (typeof val === 'number') {
+            sum += calcTreeSize(val)
+        } else if (Number.isFinite(val)) {
             sum += val
         }
     }
